@@ -232,19 +232,22 @@
         });
 
         // Log violation function
-        function logViolation(message, colorClass) {
-            if (!listenersActive) return; // Do not log if listeners are inactive
+        // Log violation function
+function logViolation(message, colorClass) {
+    if (!listenersActive) return; // Do not log if listeners are inactive
 
-            const log = document.getElementById('violation-log');
-            const now = new Date();
-            const logEntry = document.createElement('div');
-            logEntry.classList.add('log-item', colorClass);
-            logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
-            log.appendChild(logEntry);
+    const log = document.getElementById('violation-log');
+    const now = new Date();
+    const logEntry = document.createElement('div');
+    logEntry.classList.add('log-item', colorClass);
+    logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
 
-            // Scroll to the newly added log entry
-            logEntry.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
+    // Prepend the log entry instead of appending it
+    log.insertBefore(logEntry, log.firstChild);
+
+    // Scroll to the top to view the latest log entry
+    log.scrollTop = 0;
+}
 
         // Remove all event listeners after submit
         function removeEventListeners() {
