@@ -45,6 +45,10 @@
             position: relative;
             width: 98vw;
             height: 98vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
         }
 
         /* Container styling */
@@ -57,12 +61,22 @@
             background-color: #fff;
             border-radius: 0.5rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            gap: 1rem; /* Adds space between the two cards */
+        }
+
+        /* Card-like wrapper for each section */
+        .card {
+            width: 100%;
+            max-width: 600px; /* Optional max-width */
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
         }
 
         /* Quiz container styling */
         .quiz-container {
-            width: 95%;
-            padding: 1.5rem;
             text-align: center;
         }
 
@@ -127,12 +141,10 @@
 
         /* Violation log container */
         .violation-log {
-            margin-top: 1.5rem;
             padding: 0.8rem;
             border-radius: 0.375rem;
             background-color: #fff;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            width: 95%;
             height: 8rem;
             overflow-y: auto;
         }
@@ -157,21 +169,28 @@
 <body>
     <div class="container-wrapper">
         <div class="container">
-            <div class="quiz-container">
-                <h1 id="quiz-title">Simple Quiz</h1>
-                <p id="quiz-question">1. What is the capital of France?</p>
-                <form id="quiz">
-                    <div class="radio-group">
-                        <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin"> Berlin</label>
-                        <label for="paris"><input type="radio" name="question1" value="Paris" id="paris"> Paris</label>
-                        <label for="madrid"><input type="radio" name="question1" value="Madrid" id="madrid"> Madrid</label>
-                        <label for="rome"><input type="radio" name="question1" value="Rome" id="rome"> Rome</label>
-                    </div>
-                </form>
-                <button id="submit-btn" disabled>Submit</button>
-                <span id="result"></span>
+            <!-- Quiz Card -->
+            <div class="card">
+                <div class="quiz-container">
+                    <h1 id="quiz-title">Simple Quiz</h1>
+                    <p id="quiz-question">1. What is the capital of France?</p>
+                    <form id="quiz">
+                        <div class="radio-group">
+                            <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin"> Berlin</label>
+                            <label for="paris"><input type="radio" name="question1" value="Paris" id="paris"> Paris</label>
+                            <label for="madrid"><input type="radio" name="question1" value="Madrid" id="madrid"> Madrid</label>
+                            <label for="rome"><input type="radio" name="question1" value="Rome" id="rome"> Rome</label>
+                        </div>
+                    </form>
+                    <button id="submit-btn" disabled>Submit</button>
+                    <span id="result"></span>
+                </div>
             </div>
-            <div id="violation-log" class="violation-log"></div>
+
+            <!-- Violation Log Card -->
+            <div class="card">
+                <div id="violation-log" class="violation-log"></div>
+            </div>
         </div>
     </div>
 
@@ -214,6 +233,21 @@
             }
         }
 
+        document.addEventListener('selectionchange', debounce(function() {
+            const selection = document.getSelection().toString();
+            if (selection) {
+                logViolation("Text selected: " + selection, "red");
+            }
+        }, 300));
+
+        window.onblur = function() {
+            logViolation("Window focus lost", "red");
+        };
+
+        window.onfocus = function() {
+            logViolation("Window focus regained", "blue");
+        };
+
         // Enable submit button when a radio button is selected
         radioButtons.forEach(button => {
             button.addEventListener('change', function () {
@@ -253,12 +287,6 @@
         document.addEventListener('contextmenu', function() {
             logViolation("Right-click detected", "red");
         });
-        document.addEventListener('selectionchange', debounce(function() {
-            const selection = document.getSelection().toString();
-            if (selection) {
-                logViolation("Text selected: " + selection, "red");
-            }
-        }, 300));
 
         // Remove all event listeners after submission
         function removeEventListeners() {
@@ -268,6 +296,10 @@
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
             window.removeEventListener('mouseout', handleMouseOut);
+            document.removeEventListener('selectionchange', handleSelectionChange);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.onblur = null; // Remove blur listener
+            window.onfocus = null; // Remove focus listener
         }
 
         // Handle copy detection
@@ -276,7 +308,8 @@
         }
 
         // Handle keydown for Ctrl+C detection
-        var ctrlDown = false, ctrlKey = 17, cmdKey = 91, cKey = 67;
+        let ctrlDown = false;
+        const ctrlKey = 17, cmdKey = 91, cKey = 67;
 
         function handleKeyDown(e) {
             if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
