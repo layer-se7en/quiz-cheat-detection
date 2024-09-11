@@ -315,11 +315,13 @@ document.addEventListener('mouseout', handleMouseOut);
         window.onfocus = function() {
             logViolation("Window focus regained", "blue");
         };
-document.addEventListener('focusin', function() {
-    logViolation("Window focus regained", "blue");
+document.addEventListener('mouseleave', function() {
+    logViolation("Mouse left the window", "red");
 });
-document.addEventListener('focusout', function() {
-    logViolation("Window focus lost", "red");
+
+// Detect when the mouse leaves the window
+window.addEventListener('mouseleave', function() {
+    logViolation("Mouse left the window", "red");
 });
 
 
