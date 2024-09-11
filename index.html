@@ -13,7 +13,7 @@
             margin-bottom: 20px;
         }
         .no-copy-paste {
-            -webkit-user-select: text; /* Enable selection and track it on mobile (iOS Safari) */
+            -webkit-user-select: text; /* Enable selection on mobile (iOS Safari) */
             -moz-user-select: text;
             -ms-user-select: text;
             user-select: text; /* Enable text selection */
@@ -53,9 +53,14 @@
     <div id="violation-log" class="violation-log"></div>
 
     <script>
+        let textSelected = false; // Track if text is selected
+
         // Track copy event (works on both desktop and mobile)
         document.addEventListener('copy', function(e) {
-            logViolation("Copy action detected");
+            if (textSelected) {
+                logViolation("Text copied via long press or Ctrl+C");
+                textSelected = false; // Reset selection tracking after copying
+            }
         });
 
         // Variables to track Ctrl or Cmd keys
@@ -76,14 +81,12 @@
         // Track Ctrl+C on desktop
         document.addEventListener('keydown', function(e) {
             if (ctrlDown && e.keyCode == cKey) {
-                console.log("Document caught Ctrl+C");
                 logViolation("Ctrl+C Detected");
             }
         });
 
         // Right-click event detection
         document.addEventListener('contextmenu', function(e) {
-            console.log("Right-click Detected");
             logViolation("Right-click detected");
         });
 
@@ -91,35 +94,28 @@
         document.addEventListener("selectionchange", function(event) {
             var selection = document.getSelection ? document.getSelection().toString() : document.selection.createRange().toString();
             if (selection) {
-                console.log("Text selected:", selection);
+                textSelected = true;
                 logViolation("Text selected: " + selection);
+            } else {
+                textSelected = false; // Reset if text is deselected
             }
-        });
-
-        // Mouse tracking
-        document.addEventListener('mousemove', function(e) {
-            console.log("Mouse Position:", e.pageX, e.pageY);
-            logMousePosition(e.pageX, e.pageY);
         });
 
         // Detect when mouse leaves the window
         document.addEventListener('mouseout', function(e) {
             if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                console.log("Mouse left the window!");
                 logViolation("Mouse left the window");
             }
         });
 
-        // Focus out and mouse leave event
+        // Detect when window focus is lost (focus out)
         window.onblur = function() {
-            console.log("Focus Out!");
             logViolation("Window focus lost");
         };
 
         // Radio button selection logging
         document.querySelectorAll('input[name="question1"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                console.log("Answer selected:", radio.value);
                 logViolation("Answer selected: " + radio.value);
             });
         });
@@ -129,11 +125,6 @@
             var log = document.getElementById('violation-log');
             var now = new Date();
             log.innerHTML += `<p>[${now.toLocaleString()}] ${message}</p>`;
-        }
-
-        // Mouse tracking log function
-        function logMousePosition(x, y) {
-            console.log(`Mouse moved to X:${x} Y:${y}`);
         }
     </script>
 
