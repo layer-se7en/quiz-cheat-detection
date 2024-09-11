@@ -185,31 +185,35 @@
     </div>
 
     <script>
-        const correctAnswer = "Paris"; 
+        const correctAnswer = "Paris"; // Correct answer for the quiz
         let listenersActive = true;
         
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
 
+        // Log the session start time in green and disable the submit button initially
         document.addEventListener('DOMContentLoaded', function() {
             logViolation("Session started", "green");
             submitButton.disabled = true; 
         });
 
+        // Enable submit button when a radio button is selected
         radioButtons.forEach(button => {
             button.addEventListener('change', function() {
-                logViolation(`Selected answer: ${button.value}`, "yellow");
-                submitButton.disabled = false; 
+                logViolation(`Selected answer: ${button.value}`, "yellow"); // Log selected answer in yellow
+                submitButton.disabled = false; // Enable submit button
             });
         });
 
+        // Submit button logic
         submitButton.addEventListener('click', function() {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "purple"); 
+            logViolation("Session ended", "purple"); // Log session end in purple
 
+            // Disable the submit button and radio buttons after submission
             submitButton.disabled = true;
             radioButtons.forEach(button => {
-                button.disabled = true;
+                button.disabled = true; // Disable all radio buttons
             });
 
             const resultSpan = document.getElementById('result');
@@ -223,11 +227,13 @@
                 }
             }
 
+            // Stop all tracking after submit
             removeEventListeners();
         });
 
+        // Log violation function
         function logViolation(message, colorClass) {
-            if (!listenersActive) return;
+            if (!listenersActive) return; // Do not log if listeners are inactive
 
             const log = document.getElementById('violation-log');
             const now = new Date();
@@ -236,31 +242,25 @@
             logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
             log.appendChild(logEntry);
 
+            // Scroll to the newly added log entry
             logEntry.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
 
+        // Remove all event listeners after submit
         function removeEventListeners() {
-            listenersActive = false;
+            listenersActive = false; // Disable logging
             document.removeEventListener('copy', handleCopy);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('selectionchange', handleSelectionChange);
-            window.removeEventListener('mouseout', handleMouseOut);
-            window.removeEventListener('blur', handleBlur);
-            window.removeEventListener('focus', handleFocus);
+            window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.onblur = null; // Remove blur listener
+            window.onfocus = null; // Remove focus listener
         }
 
-        function handleBlur() {
-            logViolation("Window focus lost (likely cursor moved to host)", "red");
-        }
-        window.addEventListener('blur', handleBlur);
-
-        function handleFocus() {
-            logViolation("Window focus regained (cursor back in VM)", "blue");
-        }
-        window.addEventListener('focus', handleFocus);
-
+        // Additional event handlers for copy, keydown, and other behaviors
         document.addEventListener('copy', handleCopy);
         var ctrlDown = false, ctrlKey = 17, cmdKey = 91, cKey = 67;
 
@@ -289,6 +289,25 @@
                 logViolation("Text selected: " + selection, "red");
             }
         }, 300));
+
+        // Detect when mouse leaves the window
+        function handleMouseOut(e) {
+            // Check if the event's `relatedTarget` is null or undefined (mouse left the window)
+            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+                logViolation("Mouse left the window", "red");
+            }
+        }
+        window.addEventListener('mouseout', handleMouseOut); // Updated to window
+
+        // Detect when window focus is lost
+        window.onblur = function() {
+            logViolation("Window focus lost", "red");
+        };
+
+        // Detect when window focus is regained
+        window.onfocus = function() {
+            logViolation("Window focus regained", "blue");
+        };
 
         function debounce(func, wait) {
             let timeout;
