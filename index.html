@@ -3,30 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Cheat Detection</title>
-    <!-- Import Poppins font -->
+    <title>Interactive Event Tracker</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-        @font-face {
-            font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff') format('woff'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.ttf') format('truetype'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        /* Base font and element resets */
+        /* Base styles for the container and other elements */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'opendyslexic', 'Poppins', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Body styling */
         body {
             min-height: 100vh;
             display: flex;
@@ -34,44 +20,38 @@
             align-items: center;
             padding: 2rem;
             background-color: #f0f0f0;
-            font-size: 1rem; /* Base font size of 16px */
-            line-height: 1.75; /* Increased line-height for readability */
+            font-size: 1rem;
+            line-height: 1.75;
             color: #191A42;
         }
 
-        /* Container */
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 40rem; /* 640px for larger screen width */
+            position: relative;
+            width: 99vw;
+            height: 99vh;
+            background-color: #fff;
+            overflow: hidden;
         }
 
-        /* Quiz container styling */
         .quiz-container {
             width: 100%;
-            background-color: #fff;
-            padding: 2rem; /* 32px for padding */
-            border-radius: 0.5rem; /* Rounded corners */
+            padding: 2rem;
+            border-radius: 0.5rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        /* Quiz title styling */
         h1 {
-            font-size: 2rem; /* Equivalent to 32px */
+            font-size: 2rem;
             font-weight: 600;
-            margin-bottom: 1.5rem; /* Spacing below the title */
+            margin-bottom: 1.5rem;
         }
 
-        /* Quiz question styling */
         p {
-            font-size: 1.25rem; /* 20px for question text */
+            font-size: 1.25rem;
             margin-bottom: 1.25rem;
         }
 
-        /* Radio group styling */
         .radio-group {
             display: flex;
             flex-direction: column;
@@ -82,25 +62,24 @@
         }
 
         .radio-group label {
-            font-size: 1.125rem; /* 18px for radio label text */
+            font-size: 1.125rem;
             display: flex;
             align-items: center;
         }
 
         .radio-group input[type="radio"] {
-            margin-right: 0.75rem; /* 12px spacing for radio button */
+            margin-right: 0.75rem;
         }
 
-        /* Submit button styling */
         #submit-btn {
             margin-top: 2rem;
             padding: 0.75rem;
-            font-size: 1.125rem; /* 18px */
+            font-size: 1.125rem;
             font-weight: 600;
             background-color: #4CAF50;
             color: #fff;
             border: none;
-            border-radius: 0.375rem; /* Rounded corners */
+            border-radius: 0.375rem;
             cursor: pointer;
             width: 100%;
         }
@@ -110,14 +89,12 @@
             cursor: not-allowed;
         }
 
-        /* Result text styling */
         #result {
             margin-top: 1.5rem;
             font-weight: bold;
-            font-size: 1.25rem; /* 20px */
+            font-size: 1.25rem;
         }
 
-        /* Violation log container */
         .violation-log {
             margin-top: 2rem;
             padding: 1rem;
@@ -125,13 +102,12 @@
             background-color: #fff;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             width: 100%;
-            height: 12.5rem; /* 200px */
+            height: 12.5rem;
             overflow-y: auto;
         }
 
-        /* Log item styling for better visual hierarchy */
         .log-item {
-            font-size: 1rem; /* 16px for log entries */
+            font-size: 1rem;
             margin-bottom: 0.5rem;
             padding-left: 0.75rem;
         }
@@ -164,11 +140,11 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="quiz-container no-copy-paste">
-            <h1 id="quiz-title">Simple Quiz</h1>
+    <div class="container" id="container">
+        <div class="quiz-container">
+            <h1 id="quiz-title">Interactive Event Tracker</h1>
             <p id="quiz-question">1. What is the capital of France?</p>
-            <form id="quiz" aria-labelledby="quiz-title quiz-question" aria-label="Simple Quiz Form">
+            <form id="quiz" aria-labelledby="quiz-title quiz-question" aria-label="Interactive Event Tracker Form">
                 <div class="radio-group" aria-labelledby="quiz-question">
                     <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin" aria-label="Berlin"> Berlin</label>
                     <label for="paris"><input type="radio" name="question1" value="Paris" id="paris" aria-label="Paris"> Paris</label>
@@ -187,147 +163,51 @@
     <script>
         const correctAnswer = "Paris"; // Correct answer for the quiz
         let listenersActive = true;
-        
+
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
+        const container = document.getElementById('container');
 
-        // Log the session start time in green and disable the submit button initially
-        document.addEventListener('DOMContentLoaded', function() {
-            logViolation("Session started", "green");
-            submitButton.disabled = true; 
-        });
-
-        // Enable submit button when a radio button is selected
-        radioButtons.forEach(button => {
-            button.addEventListener('change', function() {
-                logViolation(`Selected answer: ${button.value}`, "yellow"); // Log selected answer in yellow
-                submitButton.disabled = false; // Enable submit button
-            });
-        });
-
-        // Submit button logic
-        submitButton.addEventListener('click', function() {
-            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "purple"); // Log session end in purple
-
-            // Disable the submit button and radio buttons after submission
-            submitButton.disabled = true;
-            radioButtons.forEach(button => {
-                button.disabled = true; // Disable all radio buttons
-            });
-
-            const resultSpan = document.getElementById('result');
-            if (selectedAnswer) {
-                if (selectedAnswer.value === correctAnswer) {
-                    resultSpan.textContent = "Correct answer!";
-                    resultSpan.style.color = "green";
-                } else {
-                    resultSpan.textContent = "Wrong answer. The correct answer is Paris.";
-                    resultSpan.style.color = "red";
-                }
+        function addEvent(obj, evt, fn) {
+            if (obj.addEventListener) {
+                obj.addEventListener(evt, fn, false);
+            } else if (obj.attachEvent) {
+                obj.attachEvent("on" + evt, fn);
             }
+        }
 
-            // Stop all tracking after submit
-            removeEventListeners();
-        });
+        function logViolation(message, colorClass) {
+            if (!listenersActive) return; // Do not log if listeners are inactive
 
-        // Log violation function
-        // Log violation function
-function logViolation(message, colorClass) {
-    if (!listenersActive) return; // Do not log if listeners are inactive
+            const log = document.getElementById('violation-log');
+            const now = new Date();
+            const logEntry = document.createElement('div');
+            logEntry.classList.add('log-item', colorClass);
+            logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
+            log.insertBefore(logEntry, log.firstChild); // Prepend the log entry
+            log.scrollTop = 0; // Scroll to the top to view the latest log entry
+        }
 
-    const log = document.getElementById('violation-log');
-    const now = new Date();
-    const logEntry = document.createElement('div');
-    logEntry.classList.add('log-item', colorClass);
-    logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
+        function handleMouseOut(e) {
+            e = e || window.event;
+            var from = e.relatedTarget || e.toElement;
+            if (!from || from.nodeName === "HTML") {
+                logViolation("Mouse left the window", "red");
+            }
+        }
 
-    // Prepend the log entry instead of appending it
-    log.insertBefore(logEntry, log.firstChild);
-
-    // Scroll to the top to view the latest log entry
-    log.scrollTop = 0;
-}
-
-        // Remove all event listeners after submit
         function removeEventListeners() {
             listenersActive = false; // Disable logging
             document.removeEventListener('copy', handleCopy);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
-            document.removeEventListener('selectionchange', handleSelectionChange);
+            document.removeEventListener('selectionchange', debounceSelectionChange);
             window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.onblur = null; // Remove blur listener
             window.onfocus = null; // Remove focus listener
         }
-
-        // Additional event handlers for copy, keydown, and other behaviors
-        document.addEventListener('copy', handleCopy);
-        var ctrlDown = false, ctrlKey = 17, cmdKey = 91, cKey = 67;
-
-        function handleKeyDown(e) {
-            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
-            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C Detected", "red");
-        }
-        document.addEventListener('keydown', handleKeyDown);
-
-        function handleKeyUp(e) {
-            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = false;
-        }
-        document.addEventListener('keyup', handleKeyUp);
-
-        function handleCopy() {
-            logViolation("Text copied via long press or Ctrl+C", "red");
-        }
-
-        document.addEventListener('contextmenu', function() {
-            logViolation("Right-click detected", "red");
-        });
-
-        document.addEventListener('selectionchange', debounce(function() {
-            var selection = document.getSelection().toString();
-            if (selection) {
-                logViolation("Text selected: " + selection, "red");
-            }
-        }, 300));
-
-        // Detect when mouse leaves the window
-        function handleMouseOut(e) {
-            // Check if the event's `relatedTarget` is null or undefined (mouse left the window)
-            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                logViolation("Mouse left the window", "red");
-            }
-        }
-
-
-
-// Add the listener on the window and document level
-window.addEventListener('mouseout', handleMouseOut);
-document.addEventListener('mouseout', handleMouseOut);
-
-
-
-        // Detect when window focus is lost
-        window.onblur = function() {
-            logViolation("Window focus lost", "red");
-        };
-
-        // Detect when window focus is regained
-        window.onfocus = function() {
-            logViolation("Window focus regained", "blue");
-        };
-document.addEventListener('mouseleave', function() {
-    logViolation("Mouse left the window", "red");
-});
-
-// Detect when the mouse leaves the window
-window.addEventListener('mouseleave', function() {
-    logViolation("Mouse left the window", "red");
-});
-
-
 
         function debounce(func, wait) {
             let timeout;
@@ -336,7 +216,69 @@ window.addEventListener('mouseleave', function() {
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
-    </script>
 
+        function handleKeyDown(e) {
+            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
+            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C Detected", "red");
+        }
+
+        function handleKeyUp(e) {
+            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = false;
+        }
+
+        function handleCopy() {
+            logViolation("Text copied via long press or Ctrl+C", "red");
+        }
+
+        function handleContextMenu() {
+            logViolation("Right-click detected", "red");
+        }
+
+        function debounceSelectionChange() {
+            var selection = document.getSelection().toString();
+            if (selection) {
+                logViolation("Text selected: " + selection, "red");
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (document.visibilityState === 'hidden') {
+                logViolation("Page hidden", "red");
+            } else {
+                logViolation("Page visible", "blue");
+            }
+        }
+
+        function setupEventListeners() {
+            addEvent(window, "load", function() {
+                addEvent(document, "mouseout", handleMouseOut);
+                addEvent(container, "mouseout", handleMouseOut); // Updated to use container
+                addEvent(document, "keydown", handleKeyDown);
+                addEvent(document, "keyup", handleKeyUp);
+                addEvent(document, "copy", handleCopy);
+                addEvent(document, "contextmenu", handleContextMenu);
+                addEvent(document, "selectionchange", debounceSelectionChange);
+                addEvent(document, "visibilitychange", handleVisibilityChange);
+                window.onblur = () => logViolation("Window focus lost", "yellow");
+                window.onfocus = () => logViolation("Window focus regained", "blue");
+            });
+        }
+
+        setupEventListeners();
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                submitButton.disabled = !document.querySelector('input[name="question1"]:checked');
+            });
+        });
+
+        submitButton.addEventListener('click', () => {
+            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
+            if (selectedAnswer) {
+                const result = selectedAnswer.value === correctAnswer ? "Correct!" : "Incorrect. The correct answer is Paris.";
+                document.getElementById('result').textContent = result;
+            }
+        });
+    </script>
 </body>
 </html>
