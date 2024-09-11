@@ -4,46 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
-    <!-- Custom font-face definitions -->
+    <!-- Custom font-face definitions for OpenDyslexic with multiple formats -->
     <style>
         @font-face {
             font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf');
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff') format('woff'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.ttf') format('truetype'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf') format('opentype');
+            font-weight: normal;
             font-style: normal;
-            font-weight: normal;
         }
 
         @font-face {
             font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.ttf');
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.woff2') format('woff2'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.woff') format('woff'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.ttf') format('truetype'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.otf') format('opentype');
+            font-weight: normal;
             font-style: italic;
-            font-weight: normal;
         }
 
         @font-face {
             font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.ttf');
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.woff') format('woff'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.ttf') format('truetype'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.otf') format('opentype');
             font-weight: bold;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.ttf');
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.woff2') format('woff2'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.woff') format('woff'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.ttf') format('truetype'),
+                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.otf') format('opentype');
             font-weight: bold;
             font-style: italic;
         }
 
-        @font-face {
-            font-family: eulexia;
-            src: url('http://dyslexicfonts.com/fonts/eulexia.ttf');
-        }
-
+        /* Set font-family to OpenDyslexic with Roboto as backup */
         * {
             font-size: 20px;
             line-height: 200%;
             color: #191A42;
-            font-family: 'opendyslexic', sans-serif !important;
+            font-family: 'opendyslexic', 'Roboto', sans-serif !important;
         }
 
         /* Reset all elements' margin, padding, and box-sizing */
