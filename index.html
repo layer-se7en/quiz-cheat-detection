@@ -63,15 +63,7 @@
             gap: 1rem;
         }
 
-        /* Card for quiz and log */
-        .card {
-            width: 100%;
-            max-width: 600px;
-            background-color: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-        }
+ 
 
         .quiz-container {
             text-align: center;
@@ -160,7 +152,7 @@
 <body>
     <div class="container-wrapper">
         <div class="container">
-            <div class="card">
+  
                 <div class="quiz-container">
                     <h1 id="quiz-title">Simple Quiz</h1>
                     <p id="quiz-question">1. What is the capital of France?</p>
@@ -175,128 +167,143 @@
                     <button id="submit-btn" disabled>Submit</button>
                     <span id="result"></span>
                 </div>
-            </div>
+           
 
-            <div class="card">
+       
                 <div id="violation-log" class="violation-log"></div>
-            </div>
+
         </div>
     </div>
 
     <script>
-        const correctAnswer = "Paris";
-        let listenersActive = true;
-        const submitButton = document.getElementById('submit-btn');
-        const radioButtons = document.querySelectorAll('input[name="question1"]');
 
 document.addEventListener('DOMContentLoaded', function() {
             logViolation("Session started", "green");
         });
 
-        // Log violations
-        function logViolation(message, colorClass) {
-            if (!listenersActive) return;
-            const log = document.getElementById('violation-log');
-            const logEntry = document.createElement('div');
-            logEntry.classList.add('log-item', colorClass);
-            logEntry.innerHTML = [${new Date().toLocaleString()}] ${message};
-            log.insertBefore(logEntry, log.firstChild);
-        }
+                const correctAnswer = "Paris"; // Correct answer for the quiz
+        let listenersActive = true;
 
-        // Mouseout detection
-        document.querySelector('.container-wrapper').addEventListener('mouseout', function (e) {
+        const submitButton = document.getElementById('submit-btn');
+        const radioButtons = document.querySelectorAll('input[name="question1"]');
+        const container = document.getElementById('container');
+
+  document.querySelector('.container-wrapper').addEventListener('mouseout', function (e) {
             if (e.relatedTarget == null || e.relatedTarget.closest('.container') == null) {
                 logViolation("Mouse left the quiz container", "red");
             }
         });
 
-        // Window-level mouseout detection
+        function addEvent(obj, evt, fn) {
+            if (obj.addEventListener) {
+                obj.addEventListener(evt, fn, false);
+            } else if (obj.attachEvent) {
+                obj.attachEvent("on" + evt, fn);
+            }
+        }
+
+        function logViolation(message, colorClass) {
+            if (!listenersActive) return; // Do not log if listeners are inactive
+
+            const log = document.getElementById('violation-log');
+            const now = new Date();
+            const logEntry = document.createElement('div');
+            logEntry.classList.add('log-item', colorClass);
+            logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
+            log.insertBefore(logEntry, log.firstChild); // Prepend the log entry
+            log.scrollTop = 0; // Scroll to the top to view the latest log entry
+        }
+
         function handleMouseOut(e) {
-            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+            e = e || window.event;
+            var from = e.relatedTarget || e.toElement;
+            if (!from || from.nodeName === "HTML") {
                 logViolation("Mouse left the window", "red");
             }
         }
 
-        // Debounce for selection
+        function removeEventListeners() {
+            listenersActive = false; // Disable logging
+            document.removeEventListener('copy', handleCopy);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            document.removeEventListener('contextmenu', handleContextMenu);
+            document.removeEventListener('selectionchange', debounceSelectionChange);
+            window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.onblur = null; // Remove blur listener
+            window.onfocus = null; // Remove focus listener
+        }
+
         function debounce(func, wait) {
             let timeout;
-            return function (...args) {
+            return function(...args) {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
 
-        // Set event listeners
-        window.addEventListener('mouseout', handleMouseOut);
-        document.addEventListener('selectionchange', debounce(function () {
-            const selection = document.getSelection().toString();
-            if (selection) logViolation(Text selected: ${selection}, "red");
-        }, 300));
-
-        window.onblur = () => logViolation("Window focus lost", "red");
-        window.onfocus = () => logViolation("Window focus regained", "blue");
-
-        // Enable submit when answer selected
-        radioButtons.forEach(button => {
-            button.addEventListener('change', function () {
-                logViolation(Selected answer: ${button.value}, "yellow");
-                submitButton.disabled = false;
-            });
-        });
-
-        // Submit logic
-        submitButton.addEventListener('click', function () {
-            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "purple");
-            submitButton.disabled = true;
-            radioButtons.forEach(button => button.disabled = true);
-            const resultSpan = document.getElementById('result');
-            if (selectedAnswer.value === correctAnswer) {
-                resultSpan.textContent = "Correct answer!";
-                resultSpan.style.color = "green";
-            } else {
-                resultSpan.textContent = Wrong answer. The correct answer is ${correctAnswer}.;
-                resultSpan.style.color = "red";
-            }
-            removeEventListeners();
-        });
-
-        // Remove event listeners after submission
-        function removeEventListeners() {
-            listenersActive = false;
-            document.removeEventListener('copy', handleCopy);
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keyup', handleKeyUp);
-            document.removeEventListener('contextmenu', handleContextMenu);
-            window.removeEventListener('mouseout', handleMouseOut);
-            document.removeEventListener('selectionchange', debounce);
-            window.onblur = null;
-            window.onfocus = null;
-        }
-
-        // Copy detection
-        function handleCopy() {
-            logViolation("Text copied via Ctrl+C", "red");
-        }
-
-        // Key detection for Ctrl+C
-        let ctrlDown = false;
-        const ctrlKey = 17, cmdKey = 91, cKey = 67;
-
         function handleKeyDown(e) {
             if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
-            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C detected", "red");
+            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C Detected", "red");
         }
 
         function handleKeyUp(e) {
             if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = false;
         }
 
-        document.addEventListener('copy', handleCopy);
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keyup', handleKeyUp);
-        document.addEventListener('contextmenu', function () {
+        function handleCopy() {
+            logViolation("Text copied via long press or Ctrl+C", "red");
+        }
+
+        function handleContextMenu() {
             logViolation("Right-click detected", "red");
+        }
+
+        function debounceSelectionChange() {
+            var selection = document.getSelection().toString();
+            if (selection) {
+                logViolation("Text selected: " + selection, "red");
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (document.visibilityState === 'hidden') {
+                logViolation("Page hidden", "red");
+            } else {
+                logViolation("Page visible", "blue");
+            }
+        }
+
+        function setupEventListeners() {
+            addEvent(window, "load", function() {
+                addEvent(document, "mouseout", handleMouseOut);
+                addEvent(container, "mouseout", handleMouseOut); // Updated to use container
+                addEvent(document, "keydown", handleKeyDown);
+                addEvent(document, "keyup", handleKeyUp);
+                addEvent(document, "copy", handleCopy);
+                addEvent(document, "contextmenu", handleContextMenu);
+                addEvent(document, "selectionchange", debounceSelectionChange);
+                addEvent(document, "visibilitychange", handleVisibilityChange);
+                window.onblur = () => logViolation("Window focus lost", "yellow");
+                window.onfocus = () => logViolation("Window focus regained", "blue");
+            });
+        }
+
+        setupEventListeners();
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                submitButton.disabled = !document.querySelector('input[name="question1"]:checked');
+            });
+        });
+
+        submitButton.addEventListener('click', () => {
+            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
+            if (selectedAnswer) {
+                const result = selectedAnswer.value === correctAnswer ? "Correct!" : "Incorrect. The correct answer is Paris.";
+                document.getElementById('result').textContent = result;
+            }
         });
     </script>
 </body>
