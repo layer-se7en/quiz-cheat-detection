@@ -13,7 +13,7 @@
             margin-bottom: 20px;
         }
         .no-copy-paste {
-            user-select: text;
+            user-select: text; /* Allow selection but track it */
         }
         #report {
             position: fixed;
@@ -111,6 +111,14 @@
             console.log("Focus Out!");
             logViolation("Window focus lost");
         };
+
+        // Radio button selection logging
+        document.querySelectorAll('input[name="question1"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                console.log("Answer selected:", radio.value);
+                logViolation("Answer selected: " + radio.value);
+            });
+        });
 
         // Violation log function
         function logViolation(message) {
