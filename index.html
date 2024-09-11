@@ -81,6 +81,12 @@
             width: 100%;
         }
 
+        /* Add rule for when button is disabled */
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
         #result {
             margin-top: 10px;
             font-weight: bold;
@@ -119,7 +125,11 @@
         .log-item.yellow {
             background-color: #fff3cd;
         }
- 
+
+        .log-item.purple {
+            background-color: #e0bbff;
+        }
+
     </style>
 </head>
 <body>
@@ -136,7 +146,7 @@
                     <label><input type="radio" name="question1" value="Rome"> Rome</label>
                 </div>
             </form>
-            <button id="submit-btn">Submit</button>
+            <button id="submit-btn" disabled>Submit</button> <!-- Changed input to button tag -->
             <span id="result"></span>
         </div>
 
@@ -146,21 +156,35 @@
 
     <script>
         const correctAnswer = "Paris"; // Correct answer for the quiz
-        let textSelected = false; // Initialize text selection tracking
         let listenersActive = true;
+        
+        const submitButton = document.getElementById('submit-btn');
+        const radioButtons = document.querySelectorAll('input[name="question1"]');
 
-        // Log the session start time in green
-        window.onload = function() {
+        // Log the session start time in green and disable the submit button initially
+        document.addEventListener('DOMContentLoaded', function() {
             logViolation("Session started", "green");
-        };
+            submitButton.disabled = true; 
+        });
+
+        // Enable submit button when a radio button is selected
+        radioButtons.forEach(button => {
+            button.addEventListener('change', function() {
+                logViolation(`Selected answer: ${button.value}`, "yellow"); // Log selected answer in yellow
+                submitButton.disabled = false; // Enable submit button
+            });
+        });
 
         // Submit button logic
-        document.getElementById('submit-btn').addEventListener('click', function() {
+        submitButton.addEventListener('click', function() {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "blue");
+            logViolation("Session ended", "purple"); // Log session end in purple
 
-            // Disable the submit button after it's clicked
-            document.getElementById('submit-btn').disabled = true;
+            // Disable the submit button and radio buttons after submission
+            submitButton.disabled = true;
+            radioButtons.forEach(button => {
+                button.disabled = true; // Disable all radio buttons
+            });
 
             const resultSpan = document.getElementById('result');
             if (selectedAnswer) {
@@ -171,9 +195,6 @@
                     resultSpan.textContent = "Wrong answer. The correct answer is Paris.";
                     resultSpan.style.color = "red";
                 }
-            } else {
-                resultSpan.textContent = "No answer selected.";
-                resultSpan.style.color = "red";
             }
 
             // Stop all tracking after submit
@@ -204,23 +225,14 @@
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('selectionchange', handleSelectionChange);
             document.removeEventListener('mouseout', handleMouseOut);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.onblur = null; // Remove blur listener
+            window.onfocus = null; // Remove focus listener
         }
 
-        // Handle copy event
-        function handleCopy() {
-            if (textSelected) {
-                logViolation("Text copied via long press or Ctrl+C", "red");
-                textSelected = false; // Reset selection tracking after copying
-            }
-        }
+        // Additional event handlers for copy, keydown, and other behaviors
         document.addEventListener('copy', handleCopy);
-
-        // Track keydown and keyup for Ctrl/Cmd+C
-        var ctrlDown = false,
-            ctrlKey = 17,
-            cmdKey = 91,
-            cKey = 67;
+        var ctrlDown = false, ctrlKey = 17, cmdKey = 91, cKey = 67;
 
         function handleKeyDown(e) {
             if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
@@ -233,25 +245,22 @@
         }
         document.addEventListener('keyup', handleKeyUp);
 
-        // Handle right-click
-        function handleContextMenu(e) {
+        function handleCopy() {
+            logViolation("Text copied via long press or Ctrl+C", "red");
+        }
+
+        document.addEventListener('contextmenu', function() {
             logViolation("Right-click detected", "red");
-        }
-        document.addEventListener('contextmenu', handleContextMenu);
+        });
 
-        // Handle text selection
-        function handleSelectionChange() {
-            var selection = document.getSelection ? document.getSelection().toString() : document.selection.createRange().toString();
+        document.addEventListener('selectionchange', debounce(function() {
+            var selection = document.getSelection().toString();
             if (selection) {
-                textSelected = true;
                 logViolation("Text selected: " + selection, "red");
-            } else {
-                textSelected = false; // Reset if text is deselected
             }
-        }
-        document.addEventListener('selectionchange', debounce(handleSelectionChange, 300));
+        }, 300));
 
-        // Handle mouse leaving the window
+        // Detect when mouse leaves the window
         function handleMouseOut(e) {
             if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
                 logViolation("Mouse left the window", "red");
@@ -259,19 +268,16 @@
         }
         document.addEventListener('mouseout', handleMouseOut);
 
-        // Handle window losing focus
+        // Detect when window focus is lost
         window.onblur = function() {
             logViolation("Window focus lost", "red");
         };
 
-        // Log answer selected in yellow
-        document.querySelectorAll('input[name="question1"]').forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                logViolation("Answer selected: " + radio.value, "yellow");
-            });
-        });
+        // Detect when window focus is regained
+        window.onfocus = function() {
+            logViolation("Window focus regained", "blue");
+        };
 
-        // Debounce function to limit how often a function is called
         function debounce(func, wait) {
             let timeout;
             return function(...args) {
