@@ -41,21 +41,12 @@
 
         /* Container wrapper */
         .container-wrapper {
-            width: 98vw;
-            height: 98vh;
+            max-width: 98vw;
+            max-height: 98vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-        }
-
-        /* Container styling */
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            height: 100%;
             background-color: #fff;
             border-radius: 0.5rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
@@ -63,8 +54,13 @@
             gap: 1rem;
         }
 
+
         .quiz-container {
+             width: 100%;
             text-align: center;
+            padding: 0.8rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -98,7 +94,7 @@
         }
 
         #submit-btn {
-            border-color: #04AA6D;
+            border-color: #4CAF50;
             color: green;
             margin-top: 1.5rem;
             padding: 0.6rem;
@@ -111,7 +107,7 @@
         }
 
         #submit-btn:hover {
-            background-color: #04AA6D;
+            background-color: #4CAF50;
             color: white;
         }
 
@@ -132,9 +128,11 @@
         }
 
         .violation-log {
+            width: 100%;
             padding: 0.8rem;
-            border-radius: 0.375rem;
+            
             background-color: #fff;
+            border-radius: 0.375rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             height: 8rem;
             overflow-y: auto;
@@ -169,7 +167,7 @@
 </head>
 <body>
     <div class="container-wrapper">
-        <div class="container">
+       
             <div class="quiz-container">
                 <h1 id="quiz-title">Simple Quiz</h1>
                 <p id="quiz-question">1. What is the capital of France?</p>
@@ -185,7 +183,7 @@
                 <span id="result"></span>
             </div>
             <div id="violation-log" class="violation-log"></div>
-        </div>
+  
     </div>
 
     <script>
