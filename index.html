@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .quiz-container {
+            margin-bottom: 20px;
+        }
+        .no-copy-paste {
+            user-select: text;
+        }
+        #report {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .violation-log {
+            margin-top: 10px;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Simple Quiz</h1>
+    <div class="quiz-container no-copy-paste">
+        <p>1. What is the capital of France?</p>
+        <form id="quiz">
+            <label><input type="radio" name="question1" value="Berlin"> Berlin</label><br>
+            <label><input type="radio" name="question1" value="Paris"> Paris</label><br>
+            <label><input type="radio" name="question1" value="Madrid"> Madrid</label><br>
+            <label><input type="radio" name="question1" value="Rome"> Rome</label><br>
+        </form>
+    </div>
+
+    <!-- Violation Log -->
+    <div id="violation-log" class="violation-log"></div>
+
+    <script>
+        // Variables to track Ctrl or Cmd keys
+        var ctrlDown = false,
+            ctrlKey = 17,
+            cmdKey = 91,
+            vKey = 86,
+            cKey = 67;
+
+        // Keydown and keyup event listeners for Ctrl and Cmd keys
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
+        });
+        document.addEventListener('keyup', function(e) {
+            if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = false;
+        });
+
+        // Track Ctrl+C and Ctrl+V on the entire document
+        document.addEventListener('keydown', function(e) {
+            if (ctrlDown && e.keyCode == cKey) {
+                console.log("Document catch Ctrl+C");
+                logViolation("Ctrl+C Detected");
+            }
+            if (ctrlDown && e.keyCode == vKey) {
+                console.log("Document catch Ctrl+V");
+                logViolation("Ctrl+V Detected");
+            }
+        });
+
+        // Right-click event detection
+        document.addEventListener('contextmenu', function(e) {
+            console.log("Right Click Detected");
+            logViolation("Right-click detected");
+        });
+
+        // Text selection detection
+        document.addEventListener("selectionchange", function(event) {
+            var selection = document.getSelection ? document.getSelection().toString() : document.selection.createRange().toString();
+            if (selection) {
+                console.log("Text selected:", selection);
+                logViolation("Text selected: " + selection);
+            }
+        });
+
+        // Mouse tracking
+        document.addEventListener('mousemove', function(e) {
+            console.log("Mouse Position:", e.pageX, e.pageY);
+            logMousePosition(e.pageX, e.pageY);
+        });
+
+        // Detect when mouse leaves the window
+        document.addEventListener('mouseout', function(e) {
+            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+                console.log("Mouse left the window!");
+                logViolation("Mouse left the window");
+            }
+        });
+
+        // Focus out and mouse leave event
+        window.onblur = function() {
+            console.log("Focus Out!");
+            logViolation("Window focus lost");
+        };
+
+        // Violation log function
+        function logViolation(message) {
+            var log = document.getElementById('violation-log');
+            var now = new Date();
+            log.innerHTML += `<p>[${now.toLocaleString()}] ${message}</p>`;
+        }
+
+        // Mouse tracking log function
+        function logMousePosition(x, y) {
+            console.log(`Mouse moved to X:${x} Y:${y}`);
+        }
+    </script>
+
+</body>
+</html>
