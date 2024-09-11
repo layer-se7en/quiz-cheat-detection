@@ -312,13 +312,33 @@
             });
         });
 
-        submitButton.addEventListener('click', () => {
+
+        submitButton.addEventListener('click', function() {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
+            logViolation("Session ended", "purple"); // Log session end in purple
+
+            // Disable the submit button and radio buttons after submission
+            submitButton.disabled = true;
+            radioButtons.forEach(button => {
+                button.disabled = true; // Disable all radio buttons
+            });
+
+            const resultSpan = document.getElementById('result');
             if (selectedAnswer) {
-                const result = selectedAnswer.value === correctAnswer ? "Correct!" : "Incorrect. The correct answer is Paris.";
-                document.getElementById('result').textContent = result;
+                if (selectedAnswer.value === correctAnswer) {
+                    resultSpan.textContent = "Correct answer!";
+                    resultSpan.style.color = "green";
+                } else {
+                    resultSpan.textContent = "Wrong answer. The correct answer is Paris.";
+                    resultSpan.style.color = "red";
+                }
             }
+
+            // Stop all tracking after submit
+            removeEventListeners();
         });
+
+
     </script>
 </body>
 </html>
