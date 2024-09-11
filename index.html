@@ -203,11 +203,10 @@
         const radioButtons = document.querySelectorAll('input[name="question1"]');
 
         document.querySelector('.container-wrapper').addEventListener('mouseout', function (e) {
-    // Check if the mouse has actually left the container-wrapper, not just moved between elements inside it
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-        logViolation("Mouse left the quiz container", "red");
-    }
-});
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                logViolation("Mouse left the quiz container", "red");
+            }
+        });
 
         function addEvent(obj, evt, fn) {
             if (obj.addEventListener) {
@@ -299,7 +298,6 @@
                 addEvent(document, "contextmenu", handleContextMenu);
                 addEvent(document, "selectionchange", debounceSelectionChange);
                 addEvent(document, "visibilitychange", handleVisibilityChange);
-                addEvent(document, "'DOMContentLoaded'", () => logViolation("Session started", "green");
                 window.onblur = () => logViolation("Window focus lost", "yellow");
                 window.onfocus = () => logViolation("Window focus regained", "blue");
             });
@@ -307,15 +305,12 @@
 
         setupEventListeners();
 
- 
-
-            radioButtons.forEach(radio => {
+        radioButtons.forEach(radio => {
             radio.addEventListener('change', () => {
-                logViolation(`Selected answer: ${button.value}`, "yellow"); 
+                logViolation(`Selected answer: ${radio.value}`, "yellow"); 
                 submitButton.disabled = !document.querySelector('input[name="question1"]:checked');
             });
         });
-
 
         submitButton.addEventListener('click', function() {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
@@ -341,8 +336,6 @@
             // Stop all tracking after submit
             removeEventListeners();
         });
-
-
     </script>
 </body>
 </html>
