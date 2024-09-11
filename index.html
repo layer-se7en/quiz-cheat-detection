@@ -277,7 +277,7 @@
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('selectionchange', handleSelectionChange);
-            document.removeEventListener('mouseout', handleMouseOut);
+            window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.onblur = null; // Remove blur listener
             window.onfocus = null; // Remove focus listener
@@ -315,11 +315,12 @@
 
         // Detect when mouse leaves the window
         function handleMouseOut(e) {
+            // Check if the event's `relatedTarget` is null or undefined (mouse left the window)
             if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
                 logViolation("Mouse left the window", "red");
             }
         }
-        document.addEventListener('mouseout', handleMouseOut);
+        window.addEventListener('mouseout', handleMouseOut); // Updated to window
 
         // Detect when window focus is lost
         window.onblur = function() {
