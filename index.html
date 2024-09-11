@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
+    <!-- Link to OpenDyslexic font -->
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
     <style>
         /* Reset all elements' margin, padding, and box-sizing */
         *,
@@ -17,7 +19,7 @@
         /* Set the body to at least the height of the viewport */
         body {
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'OpenDyslexic', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -50,7 +52,7 @@
             justify-content: center;
             gap: 15px;
             margin-top: 10px;
-            padding-left: 10px; /* Align with the <p> element */
+            padding-left: 10px;
         }
 
         .radio-group label {
@@ -62,7 +64,7 @@
         }
 
         .radio-group input[type="radio"] {
-            margin-right: 10px; /* Padding between radio and label */
+            margin-right: 10px;
         }
 
         .no-copy-paste {
@@ -99,35 +101,40 @@
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
-            height: 200px; /* Set a fixed height */
-            overflow-y: auto; /* Enable scrolling */
-            position: relative; /* Keep its position relative to the quiz-container */
+            height: 200px;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .log-item {
-            padding: 5px;
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-
+        /* Adjusted log colors for color blindness and accessibility */
         .log-item.green {
-            background-color: #d4edda;
+            background-color: #A8D08D;
+            border-left: 4px solid #2E7D32;
+            font-weight: bold;
         }
 
         .log-item.blue {
-            background-color: #cce5ff;
+            background-color: #A9CCE3;
+            border-left: 4px solid #2874A6;
+            font-weight: bold;
         }
 
         .log-item.red {
-            background-color: #f8d7da;
+            background-color: #F1948A;
+            border-left: 4px solid #C0392B;
+            font-weight: bold;
         }
 
         .log-item.yellow {
-            background-color: #fff3cd;
+            background-color: #FCF3CF;
+            border-left: 4px solid #F39C12;
+            font-weight: bold;
         }
 
         .log-item.purple {
-            background-color: #e0bbff;
+            background-color: #D7BDE2;
+            border-left: 4px solid #8E44AD;
+            font-weight: bold;
         }
 
     </style>
@@ -138,20 +145,20 @@
         <div class="quiz-container no-copy-paste">
             <h1>Simple Quiz</h1>
             <p>1. What is the capital of France?</p>
-            <form id="quiz">
-                <div class="radio-group">
-                    <label><input type="radio" name="question1" value="Berlin"> Berlin</label>
-                    <label><input type="radio" name="question1" value="Paris"> Paris</label>
-                    <label><input type="radio" name="question1" value="Madrid"> Madrid</label>
-                    <label><input type="radio" name="question1" value="Rome"> Rome</label>
+            <form id="quiz" aria-label="Simple Quiz Form">
+                <div class="radio-group" aria-labelledby="question1">
+                    <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin"> Berlin</label>
+                    <label for="paris"><input type="radio" name="question1" value="Paris" id="paris"> Paris</label>
+                    <label for="madrid"><input type="radio" name="question1" value="Madrid" id="madrid"> Madrid</label>
+                    <label for="rome"><input type="radio" name="question1" value="Rome" id="rome"> Rome</label>
                 </div>
             </form>
-            <button id="submit-btn" disabled>Submit</button> <!-- Changed input to button tag -->
+            <button id="submit-btn" disabled>Submit</button> <!-- Submit button is disabled initially -->
             <span id="result"></span>
         </div>
 
         <!-- Violation Log -->
-        <div id="violation-log" class="violation-log"></div>
+        <div id="violation-log" class="violation-log" aria-live="polite"></div>
     </div>
 
     <script>
