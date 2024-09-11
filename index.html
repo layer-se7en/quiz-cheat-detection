@@ -299,6 +299,7 @@
                 addEvent(document, "contextmenu", handleContextMenu);
                 addEvent(document, "selectionchange", debounceSelectionChange);
                 addEvent(document, "visibilitychange", handleVisibilityChange);
+                addEvent(document, "'DOMContentLoaded'", () => logViolation("Session started", "green");
                 window.onblur = () => logViolation("Window focus lost", "yellow");
                 window.onfocus = () => logViolation("Window focus regained", "blue");
             });
