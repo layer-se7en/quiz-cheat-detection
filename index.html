@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
-    <!-- Custom font-face definitions for OpenDyslexic with multiple formats -->
+    <!-- Import Poppins font -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
         @font-face {
             font-family: 'opendyslexic';
             src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
@@ -17,145 +18,148 @@
             font-style: normal;
         }
 
-        
-
-        /* Set font-family to OpenDyslexic with Roboto as backup */
+        /* Base font and element resets */
         * {
-            font-size: 1.0rem;
-            line-height: 200%;
-            color: #191A42;
-            font-family: 'opendyslexic', 'Poppins', sans-serif;
-        }
-
-        /* Reset all elements' margin, padding, and box-sizing */
-        *,
-        *::after,
-        *::before {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'opendyslexic', 'Poppins', sans-serif;
         }
 
-        /* Set the body to at least the height of the viewport */
+        /* Body styling */
         body {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 2rem;
             background-color: #f0f0f0;
+            font-size: 1rem; /* Base font size of 16px */
+            line-height: 1.75; /* Increased line-height for readability */
+            color: #191A42;
         }
 
+        /* Container */
         .container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 600px;
+            max-width: 40rem; /* 640px for larger screen width */
         }
 
+        /* Quiz container styling */
         .quiz-container {
             width: 100%;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem; /* 32px for padding */
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
+        /* Quiz title styling */
+        h1 {
+            font-size: 2rem; /* Equivalent to 32px */
+            font-weight: 600;
+            margin-bottom: 1.5rem; /* Spacing below the title */
+        }
+
+        /* Quiz question styling */
+        p {
+            font-size: 1.25rem; /* 20px for question text */
+            margin-bottom: 1.25rem;
+        }
+
+        /* Radio group styling */
         .radio-group {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-            padding-left: 10px;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-left: 1rem;
         }
 
         .radio-group label {
+            font-size: 1.125rem; /* 18px for radio label text */
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            width: 100%;
-            max-width: 300px;
         }
 
         .radio-group input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 0.75rem; /* 12px spacing for radio button */
         }
 
-        .no-copy-paste {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-
+        /* Submit button styling */
         #submit-btn {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 2rem;
+            padding: 0.75rem;
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
             background-color: #4CAF50;
-            color: white;
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 0.375rem; /* Rounded corners */
             cursor: pointer;
             width: 100%;
         }
 
-        /* Add rule for when button is disabled */
         #submit-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
 
+        /* Result text styling */
         #result {
-            margin-top: 10px;
+            margin-top: 1.5rem;
             font-weight: bold;
+            font-size: 1.25rem; /* 20px */
         }
 
+        /* Violation log container */
         .violation-log {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             width: 100%;
-            height: 200px;
+            height: 12.5rem; /* 200px */
             overflow-y: auto;
-            position: relative;
         }
 
-        /* Adjusted log colors for color blindness and accessibility */
+        /* Log item styling for better visual hierarchy */
+        .log-item {
+            font-size: 1rem; /* 16px for log entries */
+            margin-bottom: 0.5rem;
+            padding-left: 0.75rem;
+        }
+
         .log-item.green {
             background-color: #A8D08D;
-            border-left: 4px solid #2E7D32;
-            font-weight: bold;
+            border-left: 0.25rem solid #2E7D32;
         }
 
         .log-item.blue {
             background-color: #A9CCE3;
-            border-left: 4px solid #2874A6;
-            font-weight: bold;
+            border-left: 0.25rem solid #2874A6;
         }
 
         .log-item.red {
             background-color: #F1948A;
-            border-left: 4px solid #C0392B;
-            font-weight: bold;
+            border-left: 0.25rem solid #C0392B;
         }
 
         .log-item.yellow {
             background-color: #FCF3CF;
-            border-left: 4px solid #F39C12;
-            font-weight: bold;
+            border-left: 0.25rem solid #F39C12;
         }
 
         .log-item.purple {
             background-color: #D7BDE2;
-            border-left: 4px solid #8E44AD;
-            font-weight: bold;
+            border-left: 0.25rem solid #8E44AD;
         }
-
     </style>
 </head>
 <body>
@@ -181,35 +185,31 @@
     </div>
 
     <script>
-        const correctAnswer = "Paris"; // Correct answer for the quiz
+        const correctAnswer = "Paris"; 
         let listenersActive = true;
         
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
 
-        // Log the session start time in green and disable the submit button initially
         document.addEventListener('DOMContentLoaded', function() {
             logViolation("Session started", "green");
             submitButton.disabled = true; 
         });
 
-        // Enable submit button when a radio button is selected
         radioButtons.forEach(button => {
             button.addEventListener('change', function() {
-                logViolation(`Selected answer: ${button.value}`, "yellow"); // Log selected answer in yellow
-                submitButton.disabled = false; // Enable submit button
+                logViolation(`Selected answer: ${button.value}`, "yellow");
+                submitButton.disabled = false; 
             });
         });
 
-        // Submit button logic
         submitButton.addEventListener('click', function() {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "purple"); // Log session end in purple
+            logViolation("Session ended", "purple"); 
 
-            // Disable the submit button and radio buttons after submission
             submitButton.disabled = true;
             radioButtons.forEach(button => {
-                button.disabled = true; // Disable all radio buttons
+                button.disabled = true;
             });
 
             const resultSpan = document.getElementById('result');
@@ -223,13 +223,11 @@
                 }
             }
 
-            // Stop all tracking after submit
             removeEventListeners();
         });
 
-        // Log violation function
         function logViolation(message, colorClass) {
-            if (!listenersActive) return; // Do not log if listeners are inactive
+            if (!listenersActive) return;
 
             const log = document.getElementById('violation-log');
             const now = new Date();
@@ -238,25 +236,31 @@
             logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
             log.appendChild(logEntry);
 
-            // Scroll to the newly added log entry
             logEntry.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
 
-        // Remove all event listeners after submit
         function removeEventListeners() {
-            listenersActive = false; // Disable logging
+            listenersActive = false;
             document.removeEventListener('copy', handleCopy);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('selectionchange', handleSelectionChange);
-            window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.onblur = null; // Remove blur listener
-            window.onfocus = null; // Remove focus listener
+            window.removeEventListener('mouseout', handleMouseOut);
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
         }
 
-        // Additional event handlers for copy, keydown, and other behaviors
+        function handleBlur() {
+            logViolation("Window focus lost (likely cursor moved to host)", "red");
+        }
+        window.addEventListener('blur', handleBlur);
+
+        function handleFocus() {
+            logViolation("Window focus regained (cursor back in VM)", "blue");
+        }
+        window.addEventListener('focus', handleFocus);
+
         document.addEventListener('copy', handleCopy);
         var ctrlDown = false, ctrlKey = 17, cmdKey = 91, cKey = 67;
 
@@ -285,25 +289,6 @@
                 logViolation("Text selected: " + selection, "red");
             }
         }, 300));
-
-        // Detect when mouse leaves the window
-        function handleMouseOut(e) {
-            // Check if the event's `relatedTarget` is null or undefined (mouse left the window)
-            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                logViolation("Mouse left the window", "red");
-            }
-        }
-        window.addEventListener('mouseout', handleMouseOut); // Updated to window
-
-        // Detect when window focus is lost
-        window.onblur = function() {
-            logViolation("Window focus lost", "red");
-        };
-
-        // Detect when window focus is regained
-        window.onfocus = function() {
-            logViolation("Window focus regained", "blue");
-        };
 
         function debounce(func, wait) {
             let timeout;
