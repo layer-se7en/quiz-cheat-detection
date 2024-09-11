@@ -5,41 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
     <style>
+        /* Reset all elements' margin, padding, and box-sizing */
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set the body to at least the height of the viewport */
         body {
+            min-height: 100vh;
             font-family: Arial, sans-serif;
-            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
         }
+
         .quiz-container {
-            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .no-copy-paste {
-            -webkit-user-select: text; /* Enable selection on mobile (iOS Safari) */
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text; /* Enable text selection */
+            -webkit-user-select: text;
+            user-select: text;
         }
-        #report {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #f44336;
-            color: white;
+
+        #submit-btn {
+            margin-top: 20px;
             padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
         }
+
+        #result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
         .violation-log {
             margin-top: 10px;
-            background-color: #f8d7da;
             padding: 10px;
             border-radius: 5px;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .log-item {
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .log-item.green {
+            background-color: #d4edda;
+        }
+
+        .log-item.blue {
+            background-color: #cce5ff;
+        }
+
+        .log-item.red {
+            background-color: #f8d7da;
+        }
+
+        .log-item.yellow {
+            background-color: #fff3cd;
         }
     </style>
 </head>
 <body>
 
-    <h1>Simple Quiz</h1>
     <div class="quiz-container no-copy-paste">
+        <h1>Simple Quiz</h1>
         <p>1. What is the capital of France?</p>
         <form id="quiz">
             <label><input type="radio" name="question1" value="Berlin"> Berlin</label><br>
@@ -47,84 +97,147 @@
             <label><input type="radio" name="question1" value="Madrid"> Madrid</label><br>
             <label><input type="radio" name="question1" value="Rome"> Rome</label><br>
         </form>
+        <button id="submit-btn">Submit</button>
+        <span id="result"></span>
     </div>
 
     <!-- Violation Log -->
     <div id="violation-log" class="violation-log"></div>
 
     <script>
-        let textSelected = false; // Track if text is selected
+        const correctAnswer = "Paris"; // Correct answer for the quiz
+        let textSelected = false; // Initialize text selection tracking
+        let listenersActive = true;
 
-        // Track copy event (works on both desktop and mobile)
-        document.addEventListener('copy', function(e) {
-            if (textSelected) {
-                logViolation("Text copied via long press or Ctrl+C");
-                textSelected = false; // Reset selection tracking after copying
+        // Log the session start time in green
+        window.onload = function() {
+            logViolation("Session started", "green");
+        };
+
+        // Submit button logic
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
+            logViolation("Session ended", "blue");
+
+            // Disable the submit button after it's clicked
+            document.getElementById('submit-btn').disabled = true;
+
+            const resultSpan = document.getElementById('result');
+            if (selectedAnswer) {
+                if (selectedAnswer.value === correctAnswer) {
+                    resultSpan.textContent = "Correct answer!";
+                    resultSpan.style.color = "green";
+                } else {
+                    resultSpan.textContent = "Wrong answer. The correct answer is Paris.";
+                    resultSpan.style.color = "red";
+                }
+            } else {
+                resultSpan.textContent = "Please select an answer.";
+                resultSpan.style.color = "orange";
             }
+
+            // Stop all tracking after submit
+            removeEventListeners();
         });
 
-        // Variables to track Ctrl or Cmd keys
+        // Log violation function
+        function logViolation(message, colorClass) {
+    if (!listenersActive) return; // Do not log if listeners are inactive
+
+    const log = document.getElementById('violation-log');
+    const now = new Date();
+    const logEntry = document.createElement('div');
+    logEntry.classList.add('log-item', colorClass);
+    logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
+    log.appendChild(logEntry);
+
+    // Scroll to the newly added log entry
+    logEntry.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+        // Remove all event listeners after submit
+        function removeEventListeners() {
+            listenersActive = false; // Disable logging
+            document.removeEventListener('copy', handleCopy);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            document.removeEventListener('contextmenu', handleContextMenu);
+            document.removeEventListener('selectionchange', handleSelectionChange);
+            document.removeEventListener('mouseout', handleMouseOut);
+            window.onblur = null; // Remove blur listener
+        }
+
+        // Handle copy event
+        function handleCopy() {
+            if (textSelected) {
+                logViolation("Text copied via long press or Ctrl+C", "red");
+                textSelected = false; // Reset selection tracking after copying
+            }
+        }
+        document.addEventListener('copy', handleCopy);
+
+        // Track keydown and keyup for Ctrl/Cmd+C
         var ctrlDown = false,
             ctrlKey = 17,
             cmdKey = 91,
-            vKey = 86,
             cKey = 67;
 
-        // Keydown and keyup event listeners for Ctrl and Cmd keys (for desktop copy detection)
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
-        });
-        document.addEventListener('keyup', function(e) {
-            if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = false;
-        });
+        function handleKeyDown(e) {
+            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
+            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C Detected", "red");
+        }
+        document.addEventListener('keydown', handleKeyDown);
 
-        // Track Ctrl+C on desktop
-        document.addEventListener('keydown', function(e) {
-            if (ctrlDown && e.keyCode == cKey) {
-                logViolation("Ctrl+C Detected");
-            }
-        });
+        function handleKeyUp(e) {
+            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = false;
+        }
+        document.addEventListener('keyup', handleKeyUp);
 
-        // Right-click event detection
-        document.addEventListener('contextmenu', function(e) {
-            logViolation("Right-click detected");
-        });
+        // Handle right-click
+        function handleContextMenu(e) {
+            logViolation("Right-click detected", "red");
+        }
+        document.addEventListener('contextmenu', handleContextMenu);
 
-        // Text selection detection
-        document.addEventListener("selectionchange", function(event) {
+        // Handle text selection
+        function handleSelectionChange() {
             var selection = document.getSelection ? document.getSelection().toString() : document.selection.createRange().toString();
             if (selection) {
                 textSelected = true;
-                logViolation("Text selected: " + selection);
+                logViolation("Text selected: " + selection, "red");
             } else {
                 textSelected = false; // Reset if text is deselected
             }
-        });
+        }
+        document.addEventListener('selectionchange', debounce(handleSelectionChange, 300));
 
-        // Detect when mouse leaves the window
-        document.addEventListener('mouseout', function(e) {
+        // Handle mouse leaving the window
+        function handleMouseOut(e) {
             if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                logViolation("Mouse left the window");
+                logViolation("Mouse left the window", "red");
             }
-        });
+        }
+        document.addEventListener('mouseout', handleMouseOut);
 
-        // Detect when window focus is lost (focus out)
+        // Handle window losing focus
         window.onblur = function() {
-            logViolation("Window focus lost");
+            logViolation("Window focus lost", "red");
         };
 
-        // Radio button selection logging
+        // Log answer selected in yellow
         document.querySelectorAll('input[name="question1"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                logViolation("Answer selected: " + radio.value);
+                logViolation("Answer selected: " + radio.value, "yellow");
             });
         });
 
-        // Violation log function
-        function logViolation(message) {
-            var log = document.getElementById('violation-log');
-            var now = new Date();
-            log.innerHTML += `<p>[${now.toLocaleString()}] ${message}</p>`;
+        // Debounce function to limit how often a function is called
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
         }
     </script>
 
