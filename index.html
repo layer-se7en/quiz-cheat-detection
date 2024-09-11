@@ -203,10 +203,11 @@
         const radioButtons = document.querySelectorAll('input[name="question1"]');
 
         document.querySelector('.container-wrapper').addEventListener('mouseout', function (e) {
-            if (e.relatedTarget == null || e.relatedTarget.closest('.container') == null) {
-                logViolation("Mouse left the quiz container", "red");
-            }
-        });
+    // Check if the mouse has actually left the container-wrapper, not just moved between elements inside it
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+        logViolation("Mouse left the quiz container", "red");
+    }
+});
 
         function addEvent(obj, evt, fn) {
             if (obj.addEventListener) {
