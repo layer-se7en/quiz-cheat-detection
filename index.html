@@ -297,7 +297,14 @@
                 logViolation("Mouse left the window", "red");
             }
         }
-        window.addEventListener('mouseout', handleMouseOut); // Updated to window
+
+
+
+// Add the listener on the window and document level
+window.addEventListener('mouseout', handleMouseOut);
+document.addEventListener('mouseout', handleMouseOut);
+
+
 
         // Detect when window focus is lost
         window.onblur = function() {
@@ -308,6 +315,14 @@
         window.onfocus = function() {
             logViolation("Window focus regained", "blue");
         };
+document.addEventListener('focusin', function() {
+    logViolation("Window focus regained", "blue");
+});
+document.addEventListener('focusout', function() {
+    logViolation("Window focus lost", "red");
+});
+
+
 
         function debounce(func, wait) {
             let timeout;
