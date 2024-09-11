@@ -190,7 +190,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             logViolation("Session started", "green");
         });
 
@@ -202,7 +202,7 @@
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
 
-        document.querySelector('.container-wrapper').addEventListener('mouseout', function (e) {
+        document.querySelector('.container-wrapper').addEventListener('mouseout',  (e) => {
             if (!e.currentTarget.contains(e.relatedTarget)) {
                 logViolation("Mouse left the quiz container", "red");
             }
@@ -251,7 +251,7 @@
 
         function debounce(func, wait) {
             let timeout;
-            return function(...args) {
+            return (...args) => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
@@ -274,12 +274,12 @@
             logViolation("Right-click detected", "red");
         }
 
-        function debounceSelectionChange() {
+        const debounceSelectionChange = debounce(() => {
             var selection = document.getSelection().toString();
             if (selection) {
                 logViolation("Text selected: " + selection, "red");
             }
-        }
+        }, 300); // Debounced by 300ms
 
         function handleVisibilityChange() {
             if (document.visibilityState === 'hidden') {
@@ -290,7 +290,7 @@
         }
 
         function setupEventListeners() {
-            addEvent(window, "load", function() {
+            addEvent(window, "load", () => {
                 addEvent(document, "mouseout", handleMouseOut);
                 addEvent(document, "keydown", handleKeyDown);
                 addEvent(document, "keyup", handleKeyUp);
@@ -312,13 +312,13 @@
             });
         });
 
-        submitButton.addEventListener('click', function() {
+        submitButton.addEventListener('click', () => {
             const selectedAnswer = document.querySelector('input[name="question1"]:checked');
             logViolation("Session ended", "purple"); // Log session end in purple
 
             // Disable the submit button and radio buttons after submission
             submitButton.disabled = true;
-            radioButtons.forEach(button => {
+            radioButtons.forEach((button) => {
                 button.disabled = true; // Disable all radio buttons
             });
 
