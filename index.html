@@ -277,11 +277,24 @@
             document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('selectionchange', handleSelectionChange);
-            window.removeEventListener('mouseout', handleMouseOut); // Updated from document to window
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.onblur = null; // Remove blur listener
             window.onfocus = null; // Remove focus listener
         }
+
+        // Detect when window loses focus (cursor or focus moves to host machine)
+        function handleBlur() {
+            logViolation("Window lost focus (possibly moved to host machine)", "red");
+        }
+        window.addEventListener('blur', handleBlur);
+
+        // Detect when window regains focus (cursor or focus moves back to VM)
+        function handleFocus() {
+            logViolation("Window gained focus (possibly moved back into VM)", "blue");
+        }
+        window.addEventListener('focus', handleFocus);
 
         // Additional event handlers for copy, keydown, and other behaviors
         document.addEventListener('copy', handleCopy);
@@ -312,25 +325,6 @@
                 logViolation("Text selected: " + selection, "red");
             }
         }, 300));
-
-        // Detect when mouse leaves the window
-        function handleMouseOut(e) {
-            // Check if the event's `relatedTarget` is null or undefined (mouse left the window)
-            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                logViolation("Mouse left the window", "red");
-            }
-        }
-        window.addEventListener('mouseout', handleMouseOut); // Updated to window
-
-        // Detect when window focus is lost
-        window.onblur = function() {
-            logViolation("Window focus lost", "red");
-        };
-
-        // Detect when window focus is regained
-        window.onfocus = function() {
-            logViolation("Window focus regained", "blue");
-        };
 
         function debounce(func, wait) {
             let timeout;
