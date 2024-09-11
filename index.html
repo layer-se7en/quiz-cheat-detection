@@ -4,9 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
-    <!-- Link to OpenDyslexic font -->
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
+    <!-- Custom font-face definitions -->
     <style>
+        @font-face {
+            font-family: 'opendyslexic';
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf');
+            font-style: normal;
+            font-weight: normal;
+        }
+
+        @font-face {
+            font-family: 'opendyslexic';
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.ttf');
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        @font-face {
+            font-family: 'opendyslexic';
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.ttf');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'opendyslexic';
+            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.ttf');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: eulexia;
+            src: url('http://dyslexicfonts.com/fonts/eulexia.ttf');
+        }
+
+        * {
+            font-size: 20px;
+            line-height: 200%;
+            color: #191A42;
+            font-family: 'opendyslexic', sans-serif !important;
+        }
+
         /* Reset all elements' margin, padding, and box-sizing */
         *,
         *::after,
@@ -19,7 +58,6 @@
         /* Set the body to at least the height of the viewport */
         body {
             min-height: 100vh;
-            font-family: 'OpenDyslexic', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -143,18 +181,18 @@
 
     <div class="container">
         <div class="quiz-container no-copy-paste">
-            <h1>Simple Quiz</h1>
-            <p>1. What is the capital of France?</p>
-            <form id="quiz" aria-label="Simple Quiz Form">
-                <div class="radio-group" aria-labelledby="question1">
-                    <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin"> Berlin</label>
-                    <label for="paris"><input type="radio" name="question1" value="Paris" id="paris"> Paris</label>
-                    <label for="madrid"><input type="radio" name="question1" value="Madrid" id="madrid"> Madrid</label>
-                    <label for="rome"><input type="radio" name="question1" value="Rome" id="rome"> Rome</label>
+            <h1 id="quiz-title">Simple Quiz</h1>
+            <p id="quiz-question">1. What is the capital of France?</p>
+            <form id="quiz" aria-labelledby="quiz-title quiz-question" aria-label="Simple Quiz Form">
+                <div class="radio-group" aria-labelledby="quiz-question">
+                    <label for="berlin"><input type="radio" name="question1" value="Berlin" id="berlin" aria-label="Berlin"> Berlin</label>
+                    <label for="paris"><input type="radio" name="question1" value="Paris" id="paris" aria-label="Paris"> Paris</label>
+                    <label for="madrid"><input type="radio" name="question1" value="Madrid" id="madrid" aria-label="Madrid"> Madrid</label>
+                    <label for="rome"><input type="radio" name="question1" value="Rome" id="rome" aria-label="Rome"> Rome</label>
                 </div>
             </form>
-            <button id="submit-btn" disabled>Submit</button> <!-- Submit button is disabled initially -->
-            <span id="result"></span>
+            <button id="submit-btn" disabled aria-label="Submit your answer">Submit</button>
+            <span id="result" aria-live="polite"></span>
         </div>
 
         <!-- Violation Log -->
