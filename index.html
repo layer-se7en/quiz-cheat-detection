@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Static Quiz</title>
+    <title>Quiz Cheat Detection</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,10 @@
             margin-bottom: 20px;
         }
         .no-copy-paste {
-            user-select: text; /* Allow selection but track it */
+            -webkit-user-select: text; /* Enable selection and track it on mobile (iOS Safari) */
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text; /* Enable text selection */
         }
         #report {
             position: fixed;
@@ -50,6 +53,11 @@
     <div id="violation-log" class="violation-log"></div>
 
     <script>
+        // Track copy event (works on both desktop and mobile)
+        document.addEventListener('copy', function(e) {
+            logViolation("Copy action detected");
+        });
+
         // Variables to track Ctrl or Cmd keys
         var ctrlDown = false,
             ctrlKey = 17,
@@ -57,7 +65,7 @@
             vKey = 86,
             cKey = 67;
 
-        // Keydown and keyup event listeners for Ctrl and Cmd keys
+        // Keydown and keyup event listeners for Ctrl and Cmd keys (for desktop copy detection)
         document.addEventListener('keydown', function(e) {
             if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
         });
@@ -65,21 +73,17 @@
             if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = false;
         });
 
-        // Track Ctrl+C and Ctrl+V on the entire document
+        // Track Ctrl+C on desktop
         document.addEventListener('keydown', function(e) {
             if (ctrlDown && e.keyCode == cKey) {
-                console.log("Document catch Ctrl+C");
+                console.log("Document caught Ctrl+C");
                 logViolation("Ctrl+C Detected");
-            }
-            if (ctrlDown && e.keyCode == vKey) {
-                console.log("Document catch Ctrl+V");
-                logViolation("Ctrl+V Detected");
             }
         });
 
         // Right-click event detection
         document.addEventListener('contextmenu', function(e) {
-            console.log("Right Click Detected");
+            console.log("Right-click Detected");
             logViolation("Right-click detected");
         });
 
