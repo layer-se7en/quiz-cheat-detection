@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Cheat Detection</title>
-    <!-- Custom font-face definitions for OpenDyslexic with multiple formats -->
+    <!-- Custom font-face definitions for OpenDyslexic and Poppins -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
         @font-face {
             font-family: 'opendyslexic';
             src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
@@ -16,45 +18,15 @@
             font-style: normal;
         }
 
-        @font-face {
-            font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.woff2') format('woff2'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.woff') format('woff'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.ttf') format('truetype'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Italic.otf') format('opentype');
-            font-weight: normal;
-            font-style: italic;
-        }
-
-        @font-face {
-            font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.woff2') format('woff2'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.woff') format('woff'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.ttf') format('truetype'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Bold.otf') format('opentype');
-            font-weight: bold;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.woff2') format('woff2'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.woff') format('woff'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.ttf') format('truetype'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-BoldItalic.otf') format('opentype');
-            font-weight: bold;
-            font-style: italic;
-        }
-
-        /* Set font-family to OpenDyslexic with Roboto as backup */
+        /* Set base font-family to OpenDyslexic with Poppins and Roboto as backup */
         * {
-            font-size: 1.0rem;
-            line-height: 200%;
+            font-size: 1rem; /* Base font size, equivalent to 16px on default browsers */
+            line-height: 1.6;
             color: #191A42;
-            font-family: 'opendyslexic', 'Roboto', sans-serif !important;
+            font-family: 'opendyslexic', 'Poppins', 'Roboto', sans-serif !important;
         }
 
-        /* Reset all elements' margin, padding, and box-sizing */
+        /* Reset margin, padding, and box-sizing */
         *,
         *::after,
         *::before {
@@ -63,7 +35,7 @@
             box-sizing: border-box;
         }
 
-        /* Set the body to at least the height of the viewport */
+        /* Set minimum height and background color for body */
         body {
             min-height: 100vh;
             display: flex;
@@ -73,6 +45,7 @@
             background-color: #f0f0f0;
         }
 
+        /* Container */
         .container {
             display: flex;
             flex-direction: column;
@@ -82,13 +55,27 @@
             max-width: 600px;
         }
 
+        /* Quiz container styles */
         .quiz-container {
             width: 100%;
             background-color: #fff;
-            padding: 20px;
+            padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+        }
+
+        /* Visual hierarchy for title, question, and options */
+        h1 {
+            font-size: 2rem; /* Equivalent to 32px */
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        p {
+            font-size: 1.25rem; /* Equivalent to 20px */
+            font-weight: 400;
+            margin-bottom: 1.25rem;
         }
 
         .radio-group {
@@ -96,11 +83,12 @@
             flex-direction: column;
             align-items: flex-start;
             justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-            padding-left: 10px;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-left: 1rem;
         }
 
+        /* Radio buttons and labels */
         .radio-group label {
             display: flex;
             align-items: center;
@@ -110,49 +98,49 @@
         }
 
         .radio-group input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 0.625rem; /* 10px */
         }
 
-        .no-copy-paste {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-
+        /* Button styles */
         #submit-btn {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 2rem;
+            padding: 0.75rem;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
+            font-size: 1.125rem; /* Equivalent to 18px */
         }
 
-        /* Add rule for when button is disabled */
         #submit-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
 
+        /* Result text */
         #result {
-            margin-top: 10px;
+            margin-top: 1rem;
             font-weight: bold;
+            font-size: 1.25rem; /* 20px for result text */
         }
 
+        /* Violation log container */
         .violation-log {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 2rem;
+            padding: 1rem;
             border-radius: 5px;
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             height: 200px;
             overflow-y: auto;
+            font-size: 1rem; /* Keep the base size for log entries */
             position: relative;
         }
 
-        /* Adjusted log colors for color blindness and accessibility */
+        /* Log item color adjustments */
         .log-item.green {
             background-color: #A8D08D;
             border-left: 4px solid #2E7D32;
@@ -182,7 +170,6 @@
             border-left: 4px solid #8E44AD;
             font-weight: bold;
         }
-
     </style>
 </head>
 <body>
