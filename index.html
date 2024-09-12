@@ -39,9 +39,8 @@
 
     <!-- Inline minified JavaScript -->
     <script defer>
-        const containerWrapper = document.querySelector('.container-wrapper');
+        
         document.addEventListener('DOMContentLoaded', () => {
-            containerWrapper.focus();
             logMessage("Session started", "green");
         });
 
@@ -51,6 +50,7 @@
         const keyCodes = { ctrl: 17, cmd: 91, c: 67 };
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
+        const containerWrapper = document.querySelector('.container-wrapper');
 
         const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);
 
@@ -116,7 +116,7 @@
             addEvent(document, "mouseout", handleMouseOut);
             addEvent(containerWrapper, 'mouseout', (e) => {
                 if (!e.currentTarget.contains(e.relatedTarget)) {
-                    logViolation("Mouse left the quiz container", "red");
+                    logMessage("Mouse left the quiz container", "red");
                 }
             });
             addEvent(window, 'mouseout', handleMouseOut);
