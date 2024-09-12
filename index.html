@@ -8,166 +8,223 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-        @font-face {
-            font-family: 'opendyslexic';
-            src: url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff') format('woff'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.ttf') format('truetype'),
-                 url('http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-        }
+:root {
+    /* Color variables */
+    --color-primary: #3498db;
+    --color-primary-hover: #2980b9;
+    --color-secondary: #2c3e50;
+    --color-body-bg: #f0f0f0;
+    --color-white: #fff;
+    --color-light-gray: #f4f6f7;
+    --color-text: #191A42;
+    --color-success: #27ae60;
+    --color-danger: #e74c3c;
+    --color-warning: #f1c40f;
+    --color-completion: #9b59b6;
+    --color-disabled-bg: #bdc3c7;
 
-        /* Base font and element resets */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'opendyslexic', 'Poppins', sans-serif;
-        }
+    /* Additional log item colors */
+    --color-log-green: #eafaf1;
+    --color-log-red: #f9ebea;
+    --color-log-blue: #ebf5fb;
+    --color-log-yellow: #fcf3cf;
+    --color-log-purple: #f0ebf4;
+   
 
-        /* Body styling */
-        body {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #191A42;
-        }
+    /* Font family variables */
+    --font-family-primary: 'opendyslexic';
+    --font-family-secondary: 'Poppins';
+    --font-family-default: sans-serif;
 
-        /* Container wrapper */
-        .container-wrapper {
-            max-width: 98vw;
-            max-height: 98vh;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-evenly;
-            padding: 1.5rem;
-            gap: 1rem;
-        }
+    /* Font sizes */
+    --font-size-body: 0.9rem;
+    --font-size-heading: 1.8rem;
+    --font-size-subheading: 1.2rem;
+    --font-size-label: 1.1rem;
+    --font-size-button: 1.1rem;
+    --font-size-log: 1rem;
 
-        .quiz-container {
-            width: 100%;
-            height: auto;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 0.375rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            background-color: #fafafa;
-        }
+    /* Spacing and layout */
+    --spacing-small: 0.8rem;
+    --spacing-medium: 1.2rem;
+    --spacing-large: 1.5rem;
+    --border-radius: 0.375rem;
+    --transition-speed: 0.3s;
 
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #2c3e50;
-        }
+    /* Reusable styles */
+    --border-solid-thickness: 0.25rem solid;
+    --box-shadow-light: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
 
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 1.2rem;
-            color: #34495e;
-        }
+@font-face {
+    font-family: 'opendyslexic';
+    src: url('https://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+         url('https://dyslexicfonts.com/fonts/OpenDyslexic-Regular.woff') format('woff'),
+         url('https://dyslexicfonts.com/fonts/OpenDyslexic-Regular.ttf') format('truetype'),
+         url('https://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.8rem;
-            margin-top: 1.2rem;
-            padding-left: 1rem;
-        }
+/* Base font and element resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family-primary), var(--font-family-secondary), var(--font-family-default);
+}
 
-        .radio-group label {
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            color: #2c3e50;
-        }
+/* Body styling */
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-body-bg);
+    font-size: var(--font-size-body);
+    line-height: 1.6;
+    color: var(--color-text);
+}
 
-        .radio-group input[type="radio"] {
-            margin-right: 0.75rem;
-        }
+/* Container wrapper */
+.container-wrapper {
+    max-width: 98vw;
+    max-height: 98vh;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: var(--spacing-large);
+    gap: var(--spacing-small);
+}
 
-        #submit-btn {
-            border: none;
-            background-color: #3498db;
-            color: white;
-            margin-top: 1.5rem;
-            padding: 0.8rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
+/* Quiz container */
+.quiz-container {
+    width: 100%;
+    padding: var(--spacing-medium);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+    background-color: var(--color-white);
+}
 
-        #submit-btn:hover {
-            background-color: #2980b9;
-        }
+h1 {
+    font-size: var(--font-size-heading);
+    font-weight: 600;
+    margin-bottom: var(--spacing-large);
+    color: var(--color-secondary);
+}
 
-        #submit-btn:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
+p {
+    font-size: var(--font-size-subheading);
+    margin-bottom: var(--spacing-medium);
+    color: var(--color-secondary);
+}
 
-        #result {
-            margin-top: 1.5rem;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #27ae60;
-        }
+/* Radio group */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-small);
+    margin-top: var(--spacing-medium);
+    padding-left: var(--spacing-medium);
+}
 
-        .violation-log {
-            width: 100%;
-            padding: 1rem;
-            background-color: #fff;
-            border-radius: 0.375rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            height: 10rem;
-            overflow-y: auto;
-            margin-top: 1rem;
-            background-color: #f4f6f7;
-        }
+.radio-group label {
+    font-size: var(--font-size-label);
+    display: flex;
+    align-items: center;
+    color: var(--color-secondary);
+}
 
-        .log-item {
-            font-size: 1rem;
-            margin-bottom: 0.6rem;
-            padding: 0.5rem 0.8rem;
-            border-radius: 0.25rem;
-        }
+.radio-group input[type="radio"] {
+    margin-right: var(--spacing-small);
+}
 
-        .log-item.green {
-            background-color: #eafaf1;
-            border-left: 0.25rem solid #27ae60;
-            color: #27ae60;
-        }
+/* Submit button */
+#submit-btn {
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    margin-top: var(--spacing-large);
+    padding: var(--spacing-small);
+    font-size: var(--font-size-button);
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: 100%;
+    transition: background-color var(--transition-speed) ease;
+}
 
-        .log-item.red {
-            background-color: #f9ebea;
-            border-left: 0.25rem solid #e74c3c;
-            color: #e74c3c;
-        }
+#submit-btn:hover {
+    background-color: var(--color-primary-hover);
+}
 
-        .log-item.blue {
-            background-color: #ebf5fb;
-            border-left: 0.25rem solid #3498db;
-            color: #3498db;
-        }
+#submit-btn:disabled {
+    background-color: var(--color-disabled-bg);
+    cursor: not-allowed;
+}
 
-        .log-item.yellow {
-            background-color: #fcf3cf;
-            border-left: 0.25rem solid #f1c40f;
-            color: #f1c40f;
-        }
+#result {
+    margin-top: var(--spacing-large);
+    font-weight: bold;
+    font-size: var(--font-size-subheading);
+    color: var(--color-success);
+}
+
+/* message log */
+.message-log {
+    width: 100%;
+    padding: var(--spacing-medium);
+    background-color: var(--color-light-gray);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+    height: 10rem;
+    overflow-y: auto;
+    margin-top: var(--spacing-medium);
+}
+
+.log-item {
+    font-size: var(--font-size-log);
+    margin-bottom: 0.6rem;
+    padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: 0.25rem;
+}
+
+/* Log item color coding */
+.log-item.green {
+    background-color: var(--color-log-green);
+    border-left: var(--border-solid-thickness) var(--color-success);
+    color: var(--color-success);
+}
+
+.log-item.red {
+    background-color: var(--color-log-red);
+    border-left: var(--border-solid-thickness) var(--color-danger);
+    color: var(--color-danger);
+}
+
+.log-item.blue {
+    background-color: var(--color-log-blue);
+    border-left: var(--border-solid-thickness) var(--color-primary);
+    color: var(--color-primary);
+}
+
+.log-item.yellow {
+    background-color: var(--color-log-yellow);
+    border-left: var(--border-solid-thickness) var(--color-warning);
+    color: var(--color-warning);
+}
+
+.log-item.purple {
+    background-color: var(--color-log-purple);
+    border-left: var(--border-solid-thickness) var(--color-completion);
+    color: var(--color-completion);
+}
+
     </style>
 </head>
 <body>
@@ -186,156 +243,128 @@
             <button id="submit-btn" disabled>Submit</button>
             <span id="result"></span>
         </div>
-        <div id="violation-log" class="violation-log"></div>
+        <div id="message-log" class="message-log"></div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            logViolation("Session started", "green");
-        });
+        document.addEventListener('DOMContentLoaded', () => logMessage("Session started", "green"));
 
-        const correctAnswer = "Paris"; // Correct answer for the quiz
-        let listenersActive = true;
-        const ctrlKey = 17, cmdKey = 91, cKey = 67; // Added necessary key codes for Ctrl, Cmd, and 'C'
-        let ctrlDown = false;
+const correctAnswer = "Paris";
+let listenersActive = true;
+let ctrlDown = false;
 
-        const submitButton = document.getElementById('submit-btn');
-        const radioButtons = document.querySelectorAll('input[name="question1"]');
+const keyCodes = { ctrl: 17, cmd: 91, c: 67 }; // Key codes for Ctrl, Cmd, and 'C'
 
-        document.querySelector('.container-wrapper').addEventListener('mouseout',  (e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-                logViolation("Mouse left the quiz container", "red");
-            }
-        });
+const submitButton = document.getElementById('submit-btn');
+const radioButtons = document.querySelectorAll('input[name="question1"]');
 
-        function addEvent(obj, evt, fn) {
-            if (obj.addEventListener) {
-                obj.addEventListener(evt, fn, false);
-            } else if (obj.attachEvent) {
-                obj.attachEvent("on" + evt, fn);
-            }
-        }
+// General utility function for adding events with cross-browser support
+const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);
 
-        function logViolation(message, colorClass) {
-            if (!listenersActive) return; // Do not log if listeners are inactive
+// Log messages and ensure logging is active
+const logMessage = (message, colorClass) => {
+    if (!listenersActive) return;
+    const log = document.getElementById('message-log');
+    const logEntry = document.createElement('div');
+    logEntry.classList.add('log-item', colorClass);
+    logEntry.innerHTML = `[${new Date().toLocaleString()}] ${message}`;
+    log.insertBefore(logEntry, log.firstChild);
+    log.scrollTop = 0;
+};
 
-            const log = document.getElementById('violation-log');
-            const now = new Date();
-            const logEntry = document.createElement('div');
-            logEntry.classList.add('log-item', colorClass);
-            logEntry.innerHTML = `[${now.toLocaleString()}] ${message}`;
-            log.insertBefore(logEntry, log.firstChild); // Prepend the log entry
-            log.scrollTop = 0; // Scroll to the top to view the latest log entry
-        }
+// Debounce function to limit how frequently a function is invoked
+const debounce = (func, wait) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+};
 
-        function handleMouseOut(e) {
-            e = e || window.event;
-            var from = e.relatedTarget || e.toElement;
-            if (!from || from.nodeName === "HTML") {
-                logViolation("Mouse left the window", "red");
-            }
-        }
+// Event handler functions
+const handleMouseOut = e => {
+    if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+        logMessage("Mouse left the window", "red");
+    }
+};
 
-        function removeEventListeners() {
-            listenersActive = false; // Disable logging
-            document.removeEventListener('copy', handleCopy);
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keyup', handleKeyUp);
-            document.removeEventListener('contextmenu', handleContextMenu);
-            document.removeEventListener('selectionchange', debounceSelectionChange);
-            window.removeEventListener('mouseout', handleMouseOut);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.onblur = null; // Remove blur listener
-            window.onfocus = null; // Remove focus listener
-        }
+const handleKeyDown = e => {
+    if (e.keyCode === keyCodes.ctrl || e.keyCode === keyCodes.cmd) ctrlDown = true;
+    if (ctrlDown && e.keyCode === keyCodes.c) logMessage("Ctrl+C Detected", "red");
+};
 
-        function debounce(func, wait) {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
+const handleKeyUp = e => {
+    if (e.keyCode === keyCodes.ctrl || e.keyCode === keyCodes.cmd) ctrlDown = false;
+};
 
-        function handleKeyDown(e) {
-            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = true;
-            if (ctrlDown && e.keyCode === cKey) logViolation("Ctrl+C Detected", "red");
-        }
+const handleCopy = () => logMessage("Text copied via long press or Ctrl+C", "red");
+const handleContextMenu = () => logMessage("Right-click detected", "red");
 
-        function handleKeyUp(e) {
-            if (e.keyCode === ctrlKey || e.keyCode === cmdKey) ctrlDown = false;
-        }
+const debounceSelectionChange = debounce(() => {
+    const selection = document.getSelection().toString();
+    if (selection) logMessage(`Text selected: ${selection}`, "red");
+}, 300);
 
-        function handleCopy() {
-            logViolation("Text copied via long press or Ctrl+C", "red");
-        }
+const handleVisibilityChange = () => {
+    const message = document.visibilityState === 'hidden' ? "Page hidden" : "Page visible";
+    logMessage(message, document.visibilityState === 'hidden' ? "red" : "blue");
+};
 
-        function handleContextMenu() {
-            logViolation("Right-click detected", "red");
-        }
+// Remove event listeners and stop logging
+const removeEventListeners = () => {
+    listenersActive = false;
+    ["copy", "keydown", "keyup", "contextmenu", "selectionchange", "visibilitychange"]
+        .forEach(event => document.removeEventListener(event, window[event]));
 
-        const debounceSelectionChange = debounce(() => {
-            var selection = document.getSelection().toString();
-            if (selection) {
-                logViolation("Text selected: " + selection, "red");
-            }
-        }, 300); // Debounced by 300ms
+    window.removeEventListener("mouseout", handleMouseOut);
+    window.onblur = window.onfocus = null;
+};
 
-        function handleVisibilityChange() {
-            if (document.visibilityState === 'hidden') {
-                logViolation("Page hidden", "red");
-            } else {
-                logViolation("Page visible", "blue");
-            }
-        }
+// Set up event listeners
+const setupEventListeners = () => {
+    addEvent(document, "mouseout", handleMouseOut);
+    addEvent(document, "keydown", handleKeyDown);
+    addEvent(document, "keyup", handleKeyUp);
+    addEvent(document, "copy", handleCopy);
+    addEvent(document, "contextmenu", handleContextMenu);
+    addEvent(document, "selectionchange", debounceSelectionChange);
+    addEvent(document, "visibilitychange", handleVisibilityChange);
+    addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
+    addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
+};
 
-        function setupEventListeners() {
-            addEvent(window, "load", () => {
-                addEvent(document, "mouseout", handleMouseOut);
-                addEvent(document, "keydown", handleKeyDown);
-                addEvent(document, "keyup", handleKeyUp);
-                addEvent(document, "copy", handleCopy);
-                addEvent(document, "contextmenu", handleContextMenu);
-                addEvent(document, "selectionchange", debounceSelectionChange);
-                addEvent(document, "visibilitychange", handleVisibilityChange);
-                window.onblur = () => logViolation("Window focus lost", "yellow");
-                window.onfocus = () => logViolation("Window focus regained", "blue");
-            });
-        }
+setupEventListeners();
 
-        setupEventListeners();
+// Radio button change listener
+radioButtons.forEach(radio => {
+    radio.addEventListener('change', () => {
+        logMessage(`Selected answer: ${radio.value}`, "yellow");
+        submitButton.disabled = !document.querySelector('input[name="question1"]:checked');
+    });
+});
 
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', () => {
-                logViolation(`Selected answer: ${radio.value}`, "yellow"); 
-                submitButton.disabled = !document.querySelector('input[name="question1"]:checked');
-            });
-        });
+// Submit button click handler
+submitButton.addEventListener('click', () => {
+    const selectedAnswer = document.querySelector('input[name="question1"]:checked');
+    logMessage("Session ended", "purple");
 
-        submitButton.addEventListener('click', () => {
-            const selectedAnswer = document.querySelector('input[name="question1"]:checked');
-            logViolation("Session ended", "purple"); // Log session end in purple
+    // Disable the submit button and radio buttons
+    submitButton.disabled = true;
+    radioButtons.forEach(button => button.disabled = true);
 
-            // Disable the submit button and radio buttons after submission
-            submitButton.disabled = true;
-            radioButtons.forEach((button) => {
-                button.disabled = true; // Disable all radio buttons
-            });
+    const resultSpan = document.getElementById('result');
+    if (selectedAnswer) {
+        const message = selectedAnswer.value === correctAnswer 
+            ? "Correct answer!" 
+            : "Wrong answer. The correct answer is Paris.";
+        resultSpan.textContent = message;
+        resultSpan.style.color = selectedAnswer.value === correctAnswer ? "green" : "red";
+    }
 
-            const resultSpan = document.getElementById('result');
-            if (selectedAnswer) {
-                if (selectedAnswer.value === correctAnswer) {
-                    resultSpan.textContent = "Correct answer!";
-                    resultSpan.style.color = "green";
-                } else {
-                    resultSpan.textContent = "Wrong answer. The correct answer is Paris.";
-                    resultSpan.style.color = "red";
-                }
-            }
+    // Stop all tracking after submission
+    removeEventListeners();
+});
 
-            // Stop all tracking after submit
-            removeEventListeners();
-        });
     </script>
 </body>
 </html>
