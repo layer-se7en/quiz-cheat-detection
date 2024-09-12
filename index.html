@@ -39,8 +39,9 @@
 
     <!-- Inline minified JavaScript -->
     <script defer>
+        const containerWrapper = document.querySelector('.container-wrapper');
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector(".container-wrapper").focus();
+            containerWrapper.focus();
             logMessage("Session started", "green");
         });
 
@@ -110,6 +111,7 @@
 
         const setupEventListeners = () => {
             addEvent(document, "mouseout", handleMouseOut);
+            addEvent(containerWrapper, 'mouseout', handleMouseOut);
             addEvent(document, "keydown", handleKeyDown);
             addEvent(document, "keyup", handleKeyUp);
             addEvent(document, "copy", handleCopy);
