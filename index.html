@@ -19,7 +19,7 @@
     </style>
 </head>
 <body>
-    <div class="container-wrapper">
+    <div class="container-wrapper" tabindex="0">
         <div class="quiz-container">
             <h1 id="quiz-title">Simple Quiz</h1>
             <p id="quiz-question">1. What is the capital of France?</p>
@@ -39,7 +39,10 @@
 
     <!-- Inline minified JavaScript -->
     <script defer>
-        document.addEventListener('DOMContentLoaded', () => logMessage("Session started", "green"));
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector(".container-wrapper").focus();
+            logMessage("Session started", "green");
+        });
 
         const correctAnswer = "Paris";
         let listenersActive = true;
@@ -113,7 +116,7 @@
             addEvent(document, "contextmenu", handleContextMenu);
             addEvent(document, "selectionchange", debounceSelectionChange);
             addEvent(document, "visibilitychange", handleVisibilityChange);
-            addEvent(window, 'blur', () => logMessage("Window focus lost", "red"));
+            addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
             addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
         };
 
