@@ -113,7 +113,7 @@
         };
 
         const setupEventListeners = () => {
-            addEvent(document, "mouseout", handleMouseOut);
+            //addEvent(document, "mouseout", handleMouseOut);
             addEvent(containerWrapper, 'mouseout', (e) => {
                 if (!e.currentTarget.contains(e.relatedTarget)) {
                     logMessage("Mouse left the quiz container", "red");
