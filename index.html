@@ -52,7 +52,12 @@
         const radioButtons = document.querySelectorAll('input[name="question1"]');
         const containerWrapper = document.querySelector('.container-wrapper');
 
-        const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);
+        
+
+const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);     
+        
+
+
 
         const logMessage = (message, colorClass) => {
             if (!listenersActive) return;
@@ -100,35 +105,46 @@
             logMessage(message, document.visibilityState === 'hidden' ? "red" : "blue");
         };
 
-        const removeEventListeners = () => {
-            listenersActive = false;
-            document.removeEventListener("copy", handleCopy);
-            document.removeEventListener("keydown", handleKeyDown);
-            document.removeEventListener("keyup", handleKeyUp);
-            document.removeEventListener("contextmenu", handleContextMenu);
-            document.removeEventListener("selectionchange", debounceSelectionChange);
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-            window.removeEventListener("mouseout", handleMouseOut);
-            window.onblur = window.onfocus = null;
-        };
+const documentEventHandlers = [
+    { type: "keydown", handler: handleKeyDown },
+    { type: "keyup", handler: handleKeyUp },
+    { type: "copy", handler: handleCopy },
+    { type: "contextmenu", handler: handleContextMenu },
+    { type: "selectionchange", handler: handleSelectionChange },
+    { type: "visibilitychange", handler: handleVisibilityChange }
+];
 
-        const setupEventListeners = () => {
-            //addEvent(document, "mouseout", handleMouseOut);
-            addEvent(containerWrapper, 'mouseout', (e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                    logMessage("Mouse left the quiz container", "red");
-                }
-            });
-            addEvent(window, 'mouseout', handleMouseOut);
-            addEvent(document, "keydown", handleKeyDown);
-            addEvent(document, "keyup", handleKeyUp);
-            addEvent(document, "copy", handleCopy);
-            addEvent(document, "contextmenu", handleContextMenu);
-            addEvent(document, "selectionchange", debounceSelectionChange);
-            addEvent(document, "visibilitychange", handleVisibilityChange);
-            addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
-            addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
-        };
+const windowEventHandlers = [
+    { type: "mouseout", handler: handleMouseOut },
+    { type: "blur", handler: () => logMessage("Window focus lost", "yellow") },
+    { type: "focus", handler: () => logMessage("Window focus regained", "blue") }
+];
+
+const elementEventHandlers = [
+    {
+        element: containerWrapper,
+        type: 'mouseout',
+        handler: (e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                logMessage("Mouse left the quiz container", "red");
+            }
+        }
+    }
+];
+
+const setupEventListeners = () => {
+    documentEventHandlers.forEach(event => addEvent(document, event.type, event.handler));
+    windowEventHandlers.forEach(event => addEvent(window, event.type, event.handler));
+    elementEventHandlers.forEach(event => addEvent(event.element, event.type, event.handler));
+};
+
+const removeEventListeners = () => {
+    listenersActive = false;
+    documentEventHandlers.forEach(event => document.removeEventListener(event.type, event.handler));
+    windowEventHandlers.forEach(event => window.removeEventListener(event.type, event.handler));
+    elementEventHandlers.forEach(event => event.element.removeEventListener(event.type, event.handler));
+};
+
 
         setupEventListeners();
 
