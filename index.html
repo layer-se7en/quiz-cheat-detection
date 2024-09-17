@@ -114,11 +114,9 @@
 
         const setupEventListeners = () => {
             addEvent(document, "mouseout", handleMouseOut);
-            addEvent(containerWrapper, 'mouseout', (e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
+            addEvent(containerWrapper, 'mouseout', () => 
                     logViolation("Mouse left the quiz container", "red");
-                }
-            });
+                );
             addEvent(window, 'mouseout', handleMouseOut);
             addEvent(document, "keydown", handleKeyDown);
             addEvent(document, "keyup", handleKeyUp);
