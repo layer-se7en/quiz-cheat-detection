@@ -121,6 +121,28 @@
             addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
         };
 
+const setupEventListeners = () => {
+    const containerWrapper = document.querySelector('.container-wrapper');
+
+    
+        addEvent(containerWrapper, 'mouseout', (e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                logViolation("Mouse left the quiz container", "red");
+            }
+        });
+    
+
+    addEvent(window, "mouseout", handleMouseOut);
+    addEvent(document, "keydown", handleKeyDown);
+    addEvent(document, "keyup", handleKeyUp);
+    addEvent(document, "copy", handleCopy);
+    addEvent(document, "contextmenu", handleContextMenu);
+    addEvent(document, "selectionchange", debounceSelectionChange);
+    addEvent(document, "visibilitychange", handleVisibilityChange);
+    addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
+    addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
+};
+
         setupEventListeners();
 
         radioButtons.forEach(radio => {
