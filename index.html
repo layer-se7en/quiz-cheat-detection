@@ -39,6 +39,18 @@
 
 
      <script defer>
+     document.addEventListener('DOMContentLoaded', () => {
+            logMessage("Session started", "green");
+            
+            containerWrapper.focus();
+
+            containerWrapper.addEventListener('mouseout', function (e) {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                    logMessage("Mouse left the quiz container", "red");
+                }
+            });
+         setupEventListeners();
+        });
         const correctAnswer = "Paris";
         let listenersActive = true;
         let ctrlDown = false;
@@ -132,16 +144,7 @@
             removeEventListeners();
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            logMessage("Session started", "green");
-            setupEventListeners();
 
-            containerWrapper.addEventListener('mouseout', function (e) {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                    logMessage("Mouse left the quiz container", "red");
-                }
-            });
-        });
     </script>
 </body>
 </html>
