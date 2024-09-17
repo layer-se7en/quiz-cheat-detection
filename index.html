@@ -109,7 +109,8 @@
         };
 
         const setupEventListeners = () => {
-            addEvent(document, "mouseout", handleMouseOut);
+            //addEvent(document, "mouseout", handleMouseOut);
+            addEvent(window, "mouseout", handleMouseOut);
             addEvent(document, "keydown", handleKeyDown);
             addEvent(document, "keyup", handleKeyUp);
             addEvent(document, "copy", handleCopy);
