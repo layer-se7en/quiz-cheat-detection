@@ -39,14 +39,10 @@
 
     <!-- Inline minified JavaScript -->
     <script defer>
-        document.addEventListener('DOMContentLoaded', () => {
-            containerWrapper.addEventListener('mouseout', function (e) {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-                logViolation("Mouse left the quiz container", "red");
-            }
-        });
-            logMessage("Session started", "green");
-        });
+       
+
+        
+   
 
         const correctAnswer = "Paris";
         let listenersActive = true;
@@ -116,8 +112,8 @@
 
 
 const setupEventListeners = () => {
-   
-    addEvent(document, "mouseout", handleMouseOut);
+
+    //addEvent(document, "mouseout", handleMouseOut);
     addEvent(window, "mouseout", handleMouseOut);
     addEvent(document, "keydown", handleKeyDown);
     addEvent(document, "keyup", handleKeyUp);
@@ -129,7 +125,6 @@ const setupEventListeners = () => {
     addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
 };
 
-        setupEventListeners();
 
         radioButtons.forEach(radio => {
             radio.addEventListener('change', () => {
@@ -154,6 +149,17 @@ const setupEventListeners = () => {
 
             removeEventListeners();
         });
+
+         document.addEventListener('DOMContentLoaded', () => {
+        containerWrapper.addEventListener('mouseout', function (e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                logViolation("Mouse left the quiz container", "red");
+            }
+        });
+
+        logMessage("Session started", "green");
+        setupEventListeners(); 
+    });
     </script>
 </body>
 </html>
