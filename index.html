@@ -20,7 +20,7 @@
 </head>
 <body>
     <div class="container-wrapper">
-        <div class="quiz-container">
+        <div class="quiz-container" >
             <h1 id="quiz-title">Simple Quiz</h1>
             <p id="quiz-question">1. What is the capital of France?</p>
             <form id="quiz">
@@ -39,7 +39,7 @@
 
     <!-- Inline minified JavaScript -->
     <script defer>
-        const containerWrapper = document.querySelector('.container-wrapper');
+        const containerWrapper = document.querySelector('.quiz-container');
         document.addEventListener('DOMContentLoaded', () => {
             containerWrapper.focus();
             logMessage("Session started", "green");
