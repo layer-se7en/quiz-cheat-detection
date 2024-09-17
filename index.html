@@ -43,13 +43,6 @@
             logMessage("Session started", "green");
             
             containerWrapper.focus();
-
-            containerWrapper.addEventListener('mouseout', function (e) {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                    logMessage("Mouse left the quiz container", "red");
-                }
-            });
-         setupEventListeners();
         });
         const correctAnswer = "Paris";
         let listenersActive = true;
@@ -119,6 +112,13 @@
             addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
             addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
         };
+
+          containerWrapper.addEventListener('mouseout', function (e) {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                    logMessage("Mouse left the quiz container", "red");
+                }
+            });
+         setupEventListeners();
 
         radioButtons.forEach(radio => {
             radio.addEventListener('change', () => {
