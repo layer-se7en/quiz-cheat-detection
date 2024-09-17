@@ -50,6 +50,7 @@
         const keyCodes = { ctrl: 17, cmd: 91, c: 67 };
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
+         const containerWrapper = document.querySelector('.container-wrapper');
 
         const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);
 
@@ -111,7 +112,7 @@
 
 
 const setupEventListeners = () => {
-    const containerWrapper = document.querySelector('.container-wrapper');
+   
 
     
         addEvent(containerWrapper, 'mouseout', (e) => {
