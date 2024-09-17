@@ -37,20 +37,15 @@
         <div id="message-log" class="message-log"></div>
     </div>
 
-    <!-- Inline minified JavaScript -->
-    <script defer>
-       
 
-        
-   
-
+     <script defer>
         const correctAnswer = "Paris";
         let listenersActive = true;
         let ctrlDown = false;
         const keyCodes = { ctrl: 17, cmd: 91, c: 67 };
+        const containerWrapper = document.querySelector('.container-wrapper');
         const submitButton = document.getElementById('submit-btn');
         const radioButtons = document.querySelectorAll('input[name="question1"]');
-         const containerWrapper = document.querySelector('.container-wrapper');
 
         const addEvent = (obj, evt, fn) => obj.addEventListener(evt, fn, false);
 
@@ -62,14 +57,6 @@
             logEntry.innerHTML = `[${new Date().toLocaleString()}] ${message}`;
             log.insertBefore(logEntry, log.firstChild);
             log.scrollTop = 0;
-        };
-
-        const debounce = (func, wait) => {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
         };
 
         const handleMouseOut = e => {
@@ -109,22 +96,17 @@
             window.onblur = window.onfocus = null;
         };
 
-
-
-const setupEventListeners = () => {
-
-    //addEvent(document, "mouseout", handleMouseOut);
-    addEvent(window, "mouseout", handleMouseOut);
-    addEvent(document, "keydown", handleKeyDown);
-    addEvent(document, "keyup", handleKeyUp);
-    addEvent(document, "copy", handleCopy);
-    addEvent(document, "contextmenu", handleContextMenu);
-    addEvent(document, "selectionchange", debounceSelectionChange);
-    addEvent(document, "visibilitychange", handleVisibilityChange);
-    addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
-    addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
-};
-
+        const setupEventListeners = () => {
+            addEvent(window, "mouseout", handleMouseOut);
+            addEvent(document, "keydown", handleKeyDown);
+            addEvent(document, "keyup", handleKeyUp);
+            addEvent(document, "copy", handleCopy);
+            addEvent(document, "contextmenu", handleContextMenu);
+            addEvent(document, "selectionchange", debounceSelectionChange);
+            addEvent(document, "visibilitychange", handleVisibilityChange);
+            addEvent(window, 'blur', () => logMessage("Window focus lost", "yellow"));
+            addEvent(window, 'focus', () => logMessage("Window focus regained", "blue"));
+        };
 
         radioButtons.forEach(radio => {
             radio.addEventListener('change', () => {
@@ -150,16 +132,16 @@ const setupEventListeners = () => {
             removeEventListeners();
         });
 
-         document.addEventListener('DOMContentLoaded', () => {
-        containerWrapper.addEventListener('mouseout', function (e) {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-                logViolation("Mouse left the quiz container", "red");
-            }
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            logMessage("Session started", "green");
+            setupEventListeners();
 
-        logMessage("Session started", "green");
-        setupEventListeners(); 
-    });
+            containerWrapper.addEventListener('mouseout', function (e) {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                    logMessage("Mouse left the quiz container", "red");
+                }
+            });
+        });
     </script>
 </body>
 </html>
