@@ -40,7 +40,11 @@
     <!-- Inline minified JavaScript -->
     <script defer>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector(".container-wrapper").focus();
+            containerWrapper.addEventListener('mouseout', function (e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                logViolation("Mouse left the quiz container", "red");
+            }
+        });
             logMessage("Session started", "green");
         });
 
@@ -113,15 +117,7 @@
 
 const setupEventListeners = () => {
    
-
-    
-        addEvent(containerWrapper, 'mouseout', (e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-                logViolation("Mouse left the quiz container", "red");
-            }
-        });
-    
-
+    addEvent(document, "mouseout", handleMouseOut);
     addEvent(window, "mouseout", handleMouseOut);
     addEvent(document, "keydown", handleKeyDown);
     addEvent(document, "keyup", handleKeyUp);
